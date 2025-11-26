@@ -1,46 +1,51 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alap Weboldal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f4f4f4;
-        }
-        header {
-            background: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        main {
-            padding: 2rem;
-        }
-        footer {
-            background: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Skin Viewer 3D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Üdvözöllek az oldalon!</h1>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Minecraft Skin Viewer</h1>
+            <p>Töltsd fel a skin fájlodat és nézd meg 3D-ben!</p>
+        </header>
 
-    <main>
-        <h2>Alap Weboldal Szekció</h2>
-        <p>Ez egy egyszerű, induló weboldal sablon. Nyugodtan szólj, ha szeretnéd tovább bővíteni!</p>
-    </main>
+        <main>
+            <div class="viewer-container">
+                <canvas id="skin_container"></canvas>
+            </div>
 
-    <footer>
-        <p>&copy; 2025 Alap Weboldal</p>
-    </footer>
+            <div class="controls">
+                <label for="skin_input" class="upload-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Skin Feltöltése
+                </label>
+                <input type="file" id="skin_input" accept="image/png">
+                
+                <div class="options">
+                    <button id="rotate_btn" class="icon-btn" title="Forgás váltása">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    </button>
+                    <button id="walk_btn" class="icon-btn" title="Séta animáció">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Készítette: Antigravity</p>
+        </footer>
+    </div>
+
+    <!-- Skinview3d Library -->
+    <script src="https://unpkg.com/skinview3d@3.0.1/dist/skinview3d.bundle.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
