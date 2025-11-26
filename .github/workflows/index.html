@@ -1,46 +1,160 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alap Weboldal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f4f4f4;
-        }
-        header {
-            background: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        main {
-            padding: 2rem;
-        }
-        footer {
-            background: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minecraft Skin Viewer — 3D</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;color-scheme:dark}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    body{background:linear-gradient(180deg,#071126 0%, #071827 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:24px}
+    .container{width:100%;max-width:1100px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(2,6,23,0.7)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    h1{font-size:20px;margin:0}
+    .main{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:14px}
+    .viewer-card, .controls{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px}
+    #skin-viewer{width:100%;height:600px;border-radius:8px;background:#0a0f17}
+    .controls label{display:block;font-size:13px;margin:10px 0 6px}
+    .controls input[type=file]{display:block}
+    .row{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--accent);color:#022;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .small{font-size:13px}
+    footer{margin-top:12px;font-size:13px;opacity:0.8}
+    @media (max-width:900px){.main{grid-template-columns:1fr;}.viewer-card #skin-viewer{height:420px}}
+  </style>
 </head>
 <body>
+  <div class="container">
     <header>
-        <h1>Üdvözöllek az oldalon!</h1>
+      <h1>Minecraft Skin Viewer — 3D (feltölthető skin)</h1>
+      <div class="small">Tölts fel egy <strong>64×64</strong> vagy <strong>64×32</strong> PNG skint</div>
     </header>
 
-    <main>
-        <h2>Alap Weboldal Szekció</h2>
-        <p>Ez egy egyszerű, induló weboldal sablon. Nyugodtan szólj, ha szeretnéd tovább bővíteni!</p>
-    </main>
+    <div class="main">
+      <div class="viewer-card">
+        <div id="skin-viewer"></div>
+      </div>
 
-    <footer>
-        <p>&copy; 2025 Alap Weboldal</p>
-    </footer>
+      <div class="controls">
+        <label for="skinFile">Skin feltöltése (PNG)</label>
+        <input id="skinFile" type="file" accept="image/png" />
+
+        <label class="small">Előre beállított példák</label>
+        <div class="row" style="margin-bottom:10px">
+          <button id="exampleSteve" class="btn">Steve</button>
+          <button id="exampleAlex" class="btn">Alex</button>
+          <button id="resetBtn" class="btn">Alap</button>
+        </div>
+
+        <label>Beállítások</label>
+        <div class="row small" style="margin-bottom:8px">
+          <label style="width:70px">Animáció</label>
+          <select id="animationSelect">
+            <option value="none">Nincs</option>
+            <option value="walk">Séta</option>
+            <option value="spin">Folyamatos forgás</option>
+          </select>
+        </div>
+        <div class="row small" style="margin-bottom:8px">
+          <label style="width:70px">Méret</label>
+          <input id="zoomRange" type="range" min="0.5" max="2" step="0.05" value="1" />
+        </div>
+
+        <label>Tippek</label>
+        <div class="small">Fogd meg a modellt és húzd el az egérrel (vagy touch-drag). Scroll-lal nagyítás.</div>
+
+        <footer>&copy; 2025 — Készítve</footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- skinview3d könyvtár CDN-ről -->
+  <script src="https://cdn.jsdelivr.net/npm/skinview3d@1.9.0/dist/skinview3d.min.js"></script>
+  <script>
+    // Safety: ellenőrizzük, hogy a skinview3d betöltődött-e
+    if (!window.SkinViewer) {
+      document.getElementById('skin-viewer').innerText = 'Hiba: a skinviewer nem töltődött be.';
+    } else {
+      const viewerEl = document.getElementById('skin-viewer');
+      const viewer = new SkinViewer.SkinViewer({
+        width: viewerEl.clientWidth,
+        height: viewerEl.clientHeight,
+        skin: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/skins/steve.png',
+        defaultSkin: 'steve',
+        background: 0x071827,
+        autospin: false,
+        antialias: true
+      });
+      viewerEl.appendChild(viewer.canvas);
+
+      // Resize handler
+      new ResizeObserver(() => {
+        viewer.canvas.width = viewerEl.clientWidth * devicePixelRatio;
+        viewer.canvas.height = viewerEl.clientHeight * devicePixelRatio;
+        viewer.render();
+      }).observe(viewerEl);
+
+      // Controls
+      const fileInput = document.getElementById('skinFile');
+      fileInput.addEventListener('change', (ev) => {
+        const f = ev.target.files && ev.target.files[0];
+        if (!f) return;
+        if (!f.type.includes('png')) { alert('Kérlek PNG fájlt válassz.'); return; }
+        const url = URL.createObjectURL(f);
+        viewer.loadSkin(url).then(() => {
+          URL.revokeObjectURL(url);
+        }).catch(err => {
+          alert('A skin betöltése sikertelen: ' + err);
+        });
+      });
+
+      // Példák
+      document.getElementById('exampleSteve').addEventListener('click', () => {
+        viewer.loadSkin('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/skins/steve.png');
+      });
+      document.getElementById('exampleAlex').addEventListener('click', () => {
+        viewer.loadSkin('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/skins/alex.png');
+      });
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        viewer.reset();
+      });
+
+      // Animáció selector
+      const animationSelect = document.getElementById('animationSelect');
+      let spinHandle = null;
+      animationSelect.addEventListener('change', () => {
+        const val = animationSelect.value;
+        // stop any custom animation
+        if (spinHandle) { cancelAnimationFrame(spinHandle); spinHandle = null; }
+        viewer.controls.autoRotate = false;
+        if (val === 'walk') {
+          viewer.playAnimation('walk');
+        } else if (val === 'spin') {
+          viewer.stopAnimation();
+          let t = 0;
+          const step = () => {
+            t += 0.01;
+            viewer.model.rotation.y = t;
+            viewer.render();
+            spinHandle = requestAnimationFrame(step);
+          };
+          step();
+        } else {
+          viewer.stopAnimation();
+        }
+      });
+
+      // Zoom
+      const zoomRange = document.getElementById('zoomRange');
+      zoomRange.addEventListener('input', () => {
+        viewer.controls.zoom = parseFloat(zoomRange.value);
+        // skinview3d doesn't expose a direct zoom multiplier; we scale the model instead
+        viewer.model.scale.setScalar(parseFloat(zoomRange.value));
+        viewer.render();
+      });
+
+      // Enable drag / touch controls already provided by skinview3d
+    }
+  </script>
 </body>
 </html>
