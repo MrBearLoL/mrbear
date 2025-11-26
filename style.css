@@ -56,6 +56,7 @@ header h1 {
     font-weight: 800;
     margin-bottom: 0.2rem;
     background: linear-gradient(135deg, #60a5fa, #a855f7);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.1;
@@ -106,6 +107,12 @@ header p {
 .controls {
     display: flex;
     gap: 1rem;
+}
+
+.options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .icon-btn {
