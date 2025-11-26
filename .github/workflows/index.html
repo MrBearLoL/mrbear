@@ -1,160 +1,92 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hu">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Minecraft Skin Viewer — 3D</title>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;color-scheme:dark}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-    body{background:linear-gradient(180deg,#071126 0%, #071827 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:24px}
-    .container{width:100%;max-width:1100px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(2,6,23,0.7)}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    h1{font-size:20px;margin:0}
-    .main{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:14px}
-    .viewer-card, .controls{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px}
-    #skin-viewer{width:100%;height:600px;border-radius:8px;background:#0a0f17}
-    .controls label{display:block;font-size:13px;margin:10px 0 6px}
-    .controls input[type=file]{display:block}
-    .row{display:flex;gap:8px;align-items:center}
-    .btn{background:var(--accent);color:#022;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-    .small{font-size:13px}
-    footer{margin-top:12px;font-size:13px;opacity:0.8}
-    @media (max-width:900px){.main{grid-template-columns:1fr;}.viewer-card #skin-viewer{height:420px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MrBear Skin Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <div class="container">
-    <header>
-      <h1>Minecraft Skin Viewer — 3D (feltölthető skin)</h1>
-      <div class="small">Tölts fel egy <strong>64×64</strong> vagy <strong>64×32</strong> PNG skint</div>
-    </header>
+    <div class="container">
+        <div class="content-grid">
+            <div class="left-panel">
+                <header>
+                    <h1>MrBear</h1>
+                    <p>Official Skin Viewer</p>
+                </header>
 
-    <div class="main">
-      <div class="viewer-card">
-        <div id="skin-viewer"></div>
-      </div>
+                <div class="social-buttons">
+                    <a href="https://www.instagram.com/mrbearlol/" target="_blank" class="social-btn instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                        </svg>
+                        Instagram
+                    </a>
+                    <a href="https://www.youtube.com/@BearLoL/" target="_blank" class="social-btn youtube">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z" />
+                            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                        </svg>
+                        YouTube
+                    </a>
+                </div>
 
-      <div class="controls">
-        <label for="skinFile">Skin feltöltése (PNG)</label>
-        <input id="skinFile" type="file" accept="image/png" />
+                <div class="controls">
+                    <div class="options">
+                        <button id="rotate_btn" class="icon-btn" title="Forgás váltása">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
+                        </button>
+                        <button id="walk_btn" class="icon-btn" title="Séta animáció">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </button>
+                        <button id="fight_btn" class="icon-btn" title="Harc animáció">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="9" y1="15" x2="15" y2="15" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        <label class="small">Előre beállított példák</label>
-        <div class="row" style="margin-bottom:10px">
-          <button id="exampleSteve" class="btn">Steve</button>
-          <button id="exampleAlex" class="btn">Alex</button>
-          <button id="resetBtn" class="btn">Alap</button>
+            <div class="right-panel">
+                <div class="viewer-container">
+                    <canvas id="skin_container"></canvas>
+                </div>
+            </div>
         </div>
 
-        <label>Beállítások</label>
-        <div class="row small" style="margin-bottom:8px">
-          <label style="width:70px">Animáció</label>
-          <select id="animationSelect">
-            <option value="none">Nincs</option>
-            <option value="walk">Séta</option>
-            <option value="spin">Folyamatos forgás</option>
-          </select>
-        </div>
-        <div class="row small" style="margin-bottom:8px">
-          <label style="width:70px">Méret</label>
-          <input id="zoomRange" type="range" min="0.5" max="2" step="0.05" value="1" />
-        </div>
-
-        <label>Tippek</label>
-        <div class="small">Fogd meg a modellt és húzd el az egérrel (vagy touch-drag). Scroll-lal nagyítás.</div>
-
-        <footer>&copy; 2025 — Készítve</footer>
-      </div>
+        <footer>
+            <p>Készítette: Antigravity</p>
+        </footer>
     </div>
-  </div>
 
-  <!-- skinview3d könyvtár CDN-ről -->
-  <script src="https://cdn.jsdelivr.net/npm/skinview3d@1.9.0/dist/skinview3d.min.js"></script>
-  <script>
-    // Safety: ellenőrizzük, hogy a skinview3d betöltődött-e
-    if (!window.SkinViewer) {
-      document.getElementById('skin-viewer').innerText = 'Hiba: a skinviewer nem töltődött be.';
-    } else {
-      const viewerEl = document.getElementById('skin-viewer');
-      const viewer = new SkinViewer.SkinViewer({
-        width: viewerEl.clientWidth,
-        height: viewerEl.clientHeight,
-        skin: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/skins/steve.png',
-        defaultSkin: 'steve',
-        background: 0x071827,
-        autospin: false,
-        antialias: true
-      });
-      viewerEl.appendChild(viewer.canvas);
-
-      // Resize handler
-      new ResizeObserver(() => {
-        viewer.canvas.width = viewerEl.clientWidth * devicePixelRatio;
-        viewer.canvas.height = viewerEl.clientHeight * devicePixelRatio;
-        viewer.render();
-      }).observe(viewerEl);
-
-      // Controls
-      const fileInput = document.getElementById('skinFile');
-      fileInput.addEventListener('change', (ev) => {
-        const f = ev.target.files && ev.target.files[0];
-        if (!f) return;
-        if (!f.type.includes('png')) { alert('Kérlek PNG fájlt válassz.'); return; }
-        const url = URL.createObjectURL(f);
-        viewer.loadSkin(url).then(() => {
-          URL.revokeObjectURL(url);
-        }).catch(err => {
-          alert('A skin betöltése sikertelen: ' + err);
-        });
-      });
-
-      // Példák
-      document.getElementById('exampleSteve').addEventListener('click', () => {
-        viewer.loadSkin('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/skins/steve.png');
-      });
-      document.getElementById('exampleAlex').addEventListener('click', () => {
-        viewer.loadSkin('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/skins/alex.png');
-      });
-      document.getElementById('resetBtn').addEventListener('click', () => {
-        viewer.reset();
-      });
-
-      // Animáció selector
-      const animationSelect = document.getElementById('animationSelect');
-      let spinHandle = null;
-      animationSelect.addEventListener('change', () => {
-        const val = animationSelect.value;
-        // stop any custom animation
-        if (spinHandle) { cancelAnimationFrame(spinHandle); spinHandle = null; }
-        viewer.controls.autoRotate = false;
-        if (val === 'walk') {
-          viewer.playAnimation('walk');
-        } else if (val === 'spin') {
-          viewer.stopAnimation();
-          let t = 0;
-          const step = () => {
-            t += 0.01;
-            viewer.model.rotation.y = t;
-            viewer.render();
-            spinHandle = requestAnimationFrame(step);
-          };
-          step();
-        } else {
-          viewer.stopAnimation();
-        }
-      });
-
-      // Zoom
-      const zoomRange = document.getElementById('zoomRange');
-      zoomRange.addEventListener('input', () => {
-        viewer.controls.zoom = parseFloat(zoomRange.value);
-        // skinview3d doesn't expose a direct zoom multiplier; we scale the model instead
-        viewer.model.scale.setScalar(parseFloat(zoomRange.value));
-        viewer.render();
-      });
-
-      // Enable drag / touch controls already provided by skinview3d
-    }
-  </script>
+    <!-- Skinview3d Library -->
+    <script src="https://unpkg.com/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
