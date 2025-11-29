@@ -68,9 +68,9 @@ body::before {
 
 .content-grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    align-items: start;
+    align-items: stretch;
 }
 
 .left-panel {
@@ -175,17 +175,24 @@ header p {
     -webkit-text-fill-color: transparent;
 }
 
+.videos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
 .latest-video {
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: var(--border-radius);
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .latest-video h3 {
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     color: var(--text-color);
 }
 
@@ -209,13 +216,12 @@ header p {
 .right-panel {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
     animation: fadeInUp 0.8s ease-out 0.2s backwards;
 }
 
 .viewer-container {
     width: 100%;
-    height: 500px;
+    flex: 1;
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
@@ -239,9 +245,14 @@ canvas:active {
 }
 
 .controls {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 0.5rem;
+    z-index: 10;
 }
 
 .control-btn {
@@ -249,14 +260,15 @@ canvas:active {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1rem;
     border-radius: var(--border-radius);
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text-color);
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition);
 }
@@ -311,17 +323,23 @@ canvas:active {
         max-width: 400px;
     }
 
+    .videos-grid {
+        grid-template-columns: 1fr;
+    }
+
     .latest-video {
         width: 100%;
         max-width: 400px;
     }
 
     .viewer-container {
-        height: 400px;
+        min-height: 300px;
     }
 
     .controls {
+        position: static;
         width: 100%;
         max-width: 400px;
+        margin-top: 1rem;
     }
 }
