@@ -14,6 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const skinContainer = document.getElementById('skin_container');
     const rotateBtn = document.getElementById('rotate_btn');
     const walkBtn = document.getElementById('walk_btn');
+    const nextSkinBtn = document.getElementById('next_skin_btn');
+    const resetSkinBtn = document.getElementById('reset_skin_btn');
+
+    // Lista az összes skinnel
+    const skins = [
+        'src/skinek/medveSKINUriember.png',
+        'src/skinek/medveskinARMORED.png',
+        'src/skinek/medveskinCJ.png',
+        'src/skinek/medveskinKAKTUSZ.png',
+        'src/skinek/medveskinSUMMER.png',
+        'src/skinek/medveskinSUMMER_WalterWhite_Oltonyos.png',
+        'src/skinek/medveskinSUMMERcigizik.png',
+        'src/skinek/medveskinSUMMERdrunk.png',
+        'src/skinek/medveskinSUMMERhighasfuck.png',
+        'src/skinek/medveskinSUMMERnagyszemu.png',
+        'src/skinek/medveskinSUMMERnagyszemu2.png',
+        'src/skinek/medveskinSUMMERszemesbenő.png',
+        'src/skinek/medveskinhavas.png'
+    ];
+
+    let currentSkinIndex = 4; // medveskinSUMMER.png az 5. a listában (index 4)
+    const originalSkin = 'medveskinSUMMER.png';
 
     // Initialise the SkinViewer
     const skinViewer = new skinview3d.SkinViewer({
@@ -76,6 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isWalking) {
             skinViewer.animation = new skinview3d.WalkingAnimation();
             walkBtn.classList.add('active');
+        } else {
+            skinViewer.animation = null;
             walkBtn.classList.remove('active');
         }
     });
@@ -139,4 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Következő Skin gomb
+    nextSkinBtn.addEventListener('click', () => {
+        currentSkinIndex = (currentSkinIndex + 1) % skins.length;
+        skinViewer.loadSkin(skins[currentSkinIndex]);
+    });
+
+    // Eredeti Skin visszaállítása
+    resetSkinBtn.addEventListener('click', () => {
+        currentSkinIndex = 4; // medveskinSUMMER.png index
+        skinViewer.loadSkin(originalSkin);
+    });
 });

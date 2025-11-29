@@ -249,26 +249,24 @@ canvas:active {
     bottom: 1rem;
     left: 1rem;
     right: 1rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 0.5rem;
     z-index: 10;
+    justify-content: center;
 }
 
 .control-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--border-radius);
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 12px;
     background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text-color);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition);
 }
