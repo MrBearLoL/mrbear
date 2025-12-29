@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&display=swap" rel="stylesheet">
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body,
         html {
@@ -16,6 +18,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            /* Prevent scrolling */
             font-family: 'Outfit', sans-serif;
         }
 
@@ -25,23 +28,363 @@
             background-repeat: no-repeat;
             background-size: cover;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            /* Center vertically */
+            height: 100vh;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            /* Increased gap */
+            z-index: 10;
+            width: 95%;
+            max-width: 1600px;
+            /* Wider max-width */
+            height: 95vh;
+            justify-content: center;
         }
 
         .message {
-            font-size: 5rem;
+            font-size: 6rem;
+            /* Much bigger */
             font-weight: 800;
             color: white;
             text-align: center;
             text-shadow:
-                3px 3px 0 #000,
+                4px 4px 0 #000,
                 -1px -1px 0 #000,
                 1px -1px 0 #000,
                 -1px 1px 0 #000,
                 1px 1px 0 #000;
             animation: pulse 2s infinite;
-            z-index: 10;
+            margin-top: 2rem;
+            /* Moved down a bit */
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* Video Styles */
+        .video-container {
+            flex: 0 1 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 65%;
+            /* Allow it to take more width */
+        }
+
+        video {
+            max-height: 65vh;
+            /* Larger video */
+            max-width: 100%;
+            width: auto;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: block;
+        }
+
+        /* Slot Machine Styles */
+        .slot-machine-container {
+            flex: 0 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transform: scale(1);
+        }
+
+        .slot-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ffd700;
+            text-transform: uppercase;
+            text-shadow: 0 2px 0 #b8860b;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .slot-window {
+            display: flex;
+            gap: 10px;
+            background: #333;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #555;
+            overflow: hidden;
+        }
+
+        .reel {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 3px solid #000;
+            position: relative;
+        }
+
+        .reel-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Transition set dynamically in JS */
+        }
+
+        .reel-strip img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .spin-btn {
+            background: linear-gradient(to bottom, #ffd700, #b8860b);
+            border: none;
+            padding: 0.8rem 2.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #4a3c00;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow:
+                0 4px 0 #8b6508,
+                0 5px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+            min-width: 150px;
+            /* Fixed width to prevent jumping when text changes */
+        }
+
+        .spin-btn:active {
+            transform: translateY(4px);
+            box-shadow:
+                0 0 0 #8b6508,
+                0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .spin-btn:disabled {
+            /* We don't use disabled anymore for SKIP logic, but keeping style just in case */
+            filter: grayscale(0.8);
+            cursor: not-allowed;
+        }
+
+        /* Scam Overlay */
+        .scam-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .scam-modal {
+            background: #222;
+            border: 2px solid #ffd700;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            color: white;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+            text-align: center;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .scam-title {
+            font-size: 3rem;
+            color: #ffd700;
+            margin: 0 0 1rem 0;
+            text-transform: uppercase;
+        }
+
+        .scam-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #ddd;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background: #333;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .scam-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .claim-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            flex: 1;
+            min-width: 150px;
+            transition: transform 0.1s;
+        }
+
+        .claim-btn:active {
+            transform: scale(0.95);
+        }
+
+        .refuse-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            flex: 1;
+            min-width: 150px;
+            transition: transform 0.1s;
+        }
+
+        .refuse-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Hekas Overlay */
+        .hekas-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .hekas-overlay img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Win Overlay */
+        .win-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .win-text {
+            font-size: 8rem;
+            font-weight: 900;
+            text-align: center;
+            line-height: 1.1;
+            background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: rainbow 2s linear infinite, shake 0.5s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @keyframes rainbow {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: rotate(-5deg);
+            }
+
+            50% {
+                transform: rotate(5deg);
+            }
         }
 
         @keyframes pulse {
@@ -58,14 +401,302 @@
             }
         }
 
-        /* Opcionális: ha találnánk jó gifeket, ide jönnének, de most tisztán hagyjuk a designt */
+        @media (max-width: 1200px) {
+            .message {
+                font-size: 4rem;
+            }
+
+            .main-content {
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .video-container {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            video {
+                max-height: 30vh;
+            }
+
+            .slot-machine-container {
+                transform: scale(0.9);
+            }
+
+            .message {
+                font-size: 3rem;
+                margin-top: 1rem;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="message">
-        Boldog újévet!
+    <div class="content-wrapper">
+        <div class="message">
+            Boldog újévet!
+        </div>
+
+        <div class="main-content">
+            <!-- Video Section -->
+            <div class="video-container">
+                <video id="radicsVideo" autoplay loop playsinline controls>
+                    <source src="radics.mp4" type="video/mp4">
+                    A böngésződ nem támogatja a videó lejátszását.
+                </video>
+            </div>
+
+            <!-- Slot Machine Section -->
+            <div class="slot-machine-container">
+                <div class="slot-title">SZERENCSEJÁTÉK!!!!!!!!</div>
+                <div class="slot-window">
+                    <div class="reel" id="reel1">
+                        <div class="reel-strip"></div>
+                    </div>
+                    <div class="reel" id="reel2">
+                        <div class="reel-strip"></div>
+                    </div>
+                    <div class="reel" id="reel3">
+                        <div class="reel-strip"></div>
+                    </div>
+                </div>
+                <button class="spin-btn" id="spinBtn">SPIN</button>
+            </div>
+        </div>
     </div>
+
+    <!-- Scam Form Overlay -->
+    <div class="scam-overlay" id="scamOverlay">
+        <div class="scam-modal">
+            <h1 class="scam-title">NYERTÉL!</h1>
+            <p class="scam-subtitle">nyertél 1.000.000.000 robuxot, hogy átvedd írd le ezeket az adataid:</p>
+
+            <div class="form-group">
+                <label>1. Kártyaszám</label>
+                <input type="text" placeholder="XXXX XXXX XXXX XXXX">
+            </div>
+            <div class="form-group">
+                <label>2. Lejárati dátum</label>
+                <input type="text" placeholder="HH/ÉÉ">
+            </div>
+            <div class="form-group">
+                <label>3. CV kód</label>
+                <input type="text" placeholder="XXX">
+            </div>
+            <div class="form-group">
+                <label>4. Facebook jelszavad</label>
+                <input type="password" placeholder="********">
+            </div>
+            <div class="form-group">
+                <label>5. Név</label>
+                <input type="text" placeholder="Teljes név">
+            </div>
+
+            <div class="scam-buttons">
+                <button class="claim-btn" id="claimBtn">Robux igénylése</button>
+                <button class="refuse-btn" id="refuseBtn">Nem szeretném megadni az adataim</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hekas Overlay -->
+    <div class="hekas-overlay" id="hekasOverlay">
+        <img src="hekas.gif" alt="HEKAS">
+    </div>
+
+    <!-- Win Overlay -->
+    <div class="win-overlay" id="winOverlay">
+        <div class="win-text">BUZI VAGY</div>
+        <button class="close-btn" onclick="document.getElementById('winOverlay').style.display='none'">X</button>
+    </div>
+
+    <!-- Sounds -->
+    <audio id="spinSound" src="spin.mp3" preload="auto"></audio>
+    <audio id="winSound" src="win.mp3" preload="auto"></audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Video autoplay logic
+            const video = document.getElementById('radicsVideo');
+            video.volume = 1.0;
+            video.play().catch(error => {
+                console.log("Az automatikus lejátszás hanggal nem sikerült:", error);
+            });
+
+            // Slot Machine Logic
+            const images = ['1.png', '2.gif', '3.png', '4.png'];
+            const reelStrips = [
+                document.querySelector('#reel1 .reel-strip'),
+                document.querySelector('#reel2 .reel-strip'),
+                document.querySelector('#reel3 .reel-strip')
+            ];
+            const spinBtn = document.getElementById('spinBtn');
+            const winOverlay = document.getElementById('winOverlay');
+            const spinSound = document.getElementById('spinSound');
+            const winSound = document.getElementById('winSound');
+
+            // New Elements
+            const scamOverlay = document.getElementById('scamOverlay');
+            const hekasOverlay = document.getElementById('hekasOverlay');
+            const claimBtn = document.getElementById('claimBtn');
+            const refuseBtn = document.getElementById('refuseBtn');
+
+            const iconHeight = 80; // Height of one icon in pixels
+            const numIcons = images.length;
+            const loops = 12; // Optimized for 1s smooth spin
+
+            // Initialize Reels
+            reelStrips.forEach(strip => {
+                let html = '';
+                // Create a long strip of repeated images
+                for (let i = 0; i < loops; i++) {
+                    images.forEach(img => {
+                        html += `<img src="${img}" alt="icon">`;
+                    });
+                }
+                strip.innerHTML = html;
+            });
+
+            let isSpinning = false;
+            let spinTimeout;
+
+            spinBtn.addEventListener('click', () => {
+                if (isSpinning) {
+                    // SKIP LOGIC
+                    skipSpin();
+                    return;
+                }
+
+                // START SPIN LOGIC
+                isSpinning = true;
+                spinBtn.textContent = "SKIP"; // Change button text
+
+                // Play Spin Sound
+                spinSound.currentTime = 0;
+                spinSound.play().catch(e => console.log("Audio play failed", e));
+
+                // Determine results
+                const results = [
+                    Math.floor(Math.random() * numIcons),
+                    Math.floor(Math.random() * numIcons),
+                    Math.floor(Math.random() * numIcons)
+                ];
+
+                // Store results on the button element for easy access in skip function
+                spinBtn.dataset.results = JSON.stringify(results);
+
+                // Spin each reel
+                reelStrips.forEach((strip, index) => {
+                    const targetIndex = results[index];
+                    // We want to land on the target index in the LAST loop set
+                    const targetPosition = ((loops - 2) * numIcons + targetIndex) * iconHeight;
+
+                    // Reset position to 0 without animation to restart spin
+                    strip.style.transition = 'none';
+                    strip.style.transform = 'translateY(0)';
+
+                    // Force reflow
+                    strip.offsetHeight;
+
+                    // Animate to target
+                    // Fast & Smooth spin: ~1s duration
+                    const duration = 1.0 + (index * 0.1);
+
+                    strip.style.transition = `transform ${duration}s cubic-bezier(0.2, 0.8, 0.2, 1)`; // Snappy but smooth ease-out
+                    strip.style.transform = `translateY(-${targetPosition}px)`;
+                });
+
+                // Set timeout to finish spin normally if not skipped
+                // Max duration is 1.0 + 0.2 = 1.2s
+                spinTimeout = setTimeout(() => {
+                    finishSpin(results);
+                }, 1300);
+            });
+
+            function skipSpin() {
+                clearTimeout(spinTimeout); // Cancel the normal finish
+
+                const results = JSON.parse(spinBtn.dataset.results);
+
+                reelStrips.forEach((strip, index) => {
+                    const targetIndex = results[index];
+                    const targetPosition = ((loops - 2) * numIcons + targetIndex) * iconHeight;
+
+                    // Immediately jump to final position
+                    strip.style.transition = 'none';
+                    strip.style.transform = `translateY(-${targetPosition}px)`;
+                });
+
+                finishSpin(results);
+            }
+
+            function finishSpin(results) {
+                isSpinning = false;
+                spinBtn.textContent = "SPIN"; // Reset button text
+                spinSound.pause();
+
+                const img1 = images[results[0]];
+                const img2 = images[results[1]];
+                const img3 = images[results[2]];
+
+                if (img1 === img2 && img2 === img3) {
+                    triggerWin();
+                }
+            }
+
+            function triggerWin() {
+                // Show Scam Overlay instead of immediate win
+                scamOverlay.style.display = 'flex';
+            }
+
+            // Button Event Listeners
+            claimBtn.addEventListener('click', () => {
+                scamOverlay.style.display = 'none';
+                showRealWin();
+            });
+
+            refuseBtn.addEventListener('click', () => {
+                scamOverlay.style.display = 'none';
+                hekasOverlay.style.display = 'flex';
+            });
+
+            function showRealWin() {
+                // Play Win Sound
+                winSound.currentTime = 0;
+                winSound.play().catch(e => console.log("Audio play failed", e));
+
+                // Show Overlay
+                winOverlay.style.display = 'flex';
+
+                // Confetti
+                const duration = 5 * 1000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 2000 };
+
+                function randomInRange(min, max) {
+                    return Math.random() * (max - min) + min;
+                }
+
+                const interval = setInterval(function () {
+                    const timeLeft = animationEnd - Date.now();
+
+                    if (timeLeft <= 0) {
+                        return clearInterval(interval);
+                    }
+
+                    const particleCount = 50 * (timeLeft / duration);
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                }, 250);
+            }
+        });
+    </script>
 </body>
 
 </html>
