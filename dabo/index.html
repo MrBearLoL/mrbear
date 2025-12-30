@@ -11,6 +11,99 @@
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        /* Game UI Styles */
+        .game-score {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: #ffd700;
+            font-weight: bold;
+            z-index: 4002;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .menu-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px solid #ffd700;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            z-index: 5000;
+            display: none;
+            min-width: 300px;
+        }
+
+        .menu-overlay h1 {
+            color: #ffd700;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 10px 0;
+            background: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .menu-btn:hover {
+            background: #00acc1;
+        }
+
+        .menu-btn.shop {
+            background: #9c27b0;
+        }
+
+        .menu-btn.exit {
+            background: #f44336;
+        }
+
+        .menu-btn.back {
+            background: #777;
+        }
+
+        .shop-item {
+            background: #333;
+            border: 2px solid #555;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .shop-item button {
+            width: 100%;
+            padding: 10px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .shop-item button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            color: #888;
+        }
+
+        /* Original Styles */
         body,
         html {
             margin: 0;
@@ -20,6 +113,107 @@
             overflow: hidden;
             /* Prevent scrolling */
             font-family: 'Outfit', sans-serif;
+        }
+
+        /* Game Overlay Styles */
+        .game-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 4000;
+            /* Below viruses but above everything else */
+            display: none;
+            cursor: crosshair;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-ui {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 4001;
+            display: flex;
+            gap: 10px;
+        }
+
+        .finish-btn {
+            background: #ff0000;
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .ingame-shop-btn {
+            background: #9c27b0;
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .health-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            z-index: 4002;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .health-bar-container {
+            width: 200px;
+            height: 20px;
+            background: #333;
+            border: 2px solid white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            background: #00ff00;
+            width: 100%;
+            transition: width 0.2s;
+        }
+
+        .start-game-btn {
+            margin-top: 1rem;
+            background: #00bcd4;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 #008ba3;
+        }
+
+        .start-game-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
         }
 
         body {
@@ -434,6 +628,139 @@
                 margin-top: 1rem;
             }
         }
+
+        /* Virus Popup Styles */
+        .popup {
+            position: absolute;
+            width: 280px;
+            z-index: 5000;
+            /* On top of everything */
+        }
+
+        .style-classic {
+            background-color: #c0c0c0;
+            border: 2px outset white;
+            box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+        }
+
+        .style-classic .popup-header {
+            background: linear-gradient(90deg, darkblue, blue);
+            color: white;
+            padding: 3px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .style-classic .popup-close {
+            background-color: #c0c0c0;
+            color: black;
+            border: 1px outset white;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 14px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .style-terminal {
+            background-color: black;
+            border: 2px solid lime;
+            color: lime;
+            font-family: 'Consolas', monospace;
+        }
+
+        .style-terminal .popup-header {
+            background: lime;
+            color: black;
+            padding: 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .style-terminal .popup-close {
+            background: black;
+            color: lime;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .style-alert {
+            background-color: #ffcccc;
+            border: 4px solid red;
+            color: red;
+            font-family: Arial, sans-serif;
+        }
+
+        .style-alert .popup-header {
+            background: red;
+            color: white;
+            padding: 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .style-alert .popup-close {
+            background: white;
+            color: red;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .style-flashy {
+            background-color: yellow;
+            border: 3px dashed magenta;
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        .style-flashy .popup-header {
+            background: magenta;
+            color: yellow;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            padding: 2px;
+        }
+
+        .style-flashy .popup-close {
+            background: yellow;
+            color: magenta;
+            border: 1px solid magenta;
+            cursor: pointer;
+        }
+
+        .popup-content {
+            padding: 10px;
+            text-align: center;
+            color: black;
+        }
+
+        .style-terminal .popup-content {
+            color: lime;
+        }
+
+        .style-alert .popup-content {
+            color: red;
+        }
+
+        .style-flashy .popup-content {
+            color: blue;
+        }
+
+        .popup img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
     </style>
 </head>
 
@@ -467,6 +794,7 @@
                     </div>
                 </div>
                 <button class="spin-btn" id="spinBtn">SPIN</button>
+                <button class="start-game-btn" id="startGameBtn">JÁTÉK</button>
             </div>
         </div>
     </div>
@@ -510,6 +838,53 @@
         <img src="hekas.gif" alt="HEKAS">
     </div>
 
+    <!-- Game Overlay -->
+    <div class="game-overlay" id="gameOverlay">
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-score">Pénz: <span id="scoreDisplay" style="cursor: pointer; text-decoration: underline;"
+                onclick="cheatScore()" title="Kattints a csaláshoz!">0</span></div>
+
+        <div class="health-display">
+            Élet:
+            <div class="health-bar-container">
+                <div class="health-bar-fill" id="healthBarFill"></div>
+            </div>
+        </div>
+
+        <div class="game-ui">
+            <button class="ingame-shop-btn" id="ingameShopBtn" onclick="openShopIngame()">BOLT</button>
+            <button class="finish-btn" id="finishGameBtn">BEFEJEZÉS</button>
+        </div>
+
+        <!-- Post Game Menu -->
+        <div id="postGameMenu" class="menu-overlay">
+            <h1>Játék Vége</h1>
+            <button class="menu-btn" id="restartBtn">Újrakezdés</button>
+            <button class="menu-btn shop" id="shopBtn">Bolt</button>
+            <button class="menu-btn exit" onclick="document.getElementById('finishGameBtn').click()">Kilépés</button>
+        </div>
+
+        <!-- Shop Menu -->
+        <div id="shopMenu" class="menu-overlay">
+            <h1>Bolt</h1>
+            <p>Pénz: <span id="shopMoneyDisplay" style="cursor: pointer; text-decoration: underline;"
+                    onclick="cheatScore()">0</span></p>
+            <div class="shop-item">
+                <button id="upg1Btn" onclick="buyUpgrade(1)">10 Pont - Automáta (14/mp)</button>
+            </div>
+            <div class="shop-item">
+                <button id="upg2Btn" onclick="buyUpgrade(2)">30 Pont - Gyorstüzelés (20/mp + Dupla)</button>
+            </div>
+            <div class="shop-item">
+                <button id="upg3Btn" onclick="buyUpgrade(3)">50 Pont - Tükörhajó</button>
+            </div>
+            <button class="menu-btn back" onclick="closeShop()">Vissza</button>
+        </div>
+    </div>
+
+    <!-- Virus Container -->
+    <div id="virus-container"></div>
+
     <!-- Win Overlay -->
     <div class="win-overlay" id="winOverlay">
         <div class="win-text">BUZI VAGY</div>
@@ -546,15 +921,17 @@
             const hekasOverlay = document.getElementById('hekasOverlay');
             const claimBtn = document.getElementById('claimBtn');
             const refuseBtn = document.getElementById('refuseBtn');
+            const virusContainer = document.getElementById('virus-container');
 
-            const iconHeight = 80; // Height of one icon in pixels
+
+
+            const iconHeight = 80;
             const numIcons = images.length;
-            const loops = 12; // Optimized for 1s smooth spin
+            const loops = 12;
 
             // Initialize Reels
             reelStrips.forEach(strip => {
                 let html = '';
-                // Create a long strip of repeated images
                 for (let i = 0; i < loops; i++) {
                     images.forEach(img => {
                         html += `<img src="${img}" alt="icon">`;
@@ -568,77 +945,56 @@
 
             spinBtn.addEventListener('click', () => {
                 if (isSpinning) {
-                    // SKIP LOGIC
                     skipSpin();
                     return;
                 }
 
-                // START SPIN LOGIC
                 isSpinning = true;
-                spinBtn.textContent = "SKIP"; // Change button text
-
-                // Play Spin Sound
+                spinBtn.textContent = "SKIP";
                 spinSound.currentTime = 0;
                 spinSound.play().catch(e => console.log("Audio play failed", e));
 
-                // Determine results
                 const results = [
                     Math.floor(Math.random() * numIcons),
                     Math.floor(Math.random() * numIcons),
                     Math.floor(Math.random() * numIcons)
                 ];
 
-                // Store results on the button element for easy access in skip function
                 spinBtn.dataset.results = JSON.stringify(results);
 
-                // Spin each reel
                 reelStrips.forEach((strip, index) => {
                     const targetIndex = results[index];
-                    // We want to land on the target index in the LAST loop set
                     const targetPosition = ((loops - 2) * numIcons + targetIndex) * iconHeight;
 
-                    // Reset position to 0 without animation to restart spin
                     strip.style.transition = 'none';
                     strip.style.transform = 'translateY(0)';
-
-                    // Force reflow
                     strip.offsetHeight;
 
-                    // Animate to target
-                    // Fast & Smooth spin: ~1s duration
                     const duration = 1.0 + (index * 0.1);
-
-                    strip.style.transition = `transform ${duration}s cubic-bezier(0.2, 0.8, 0.2, 1)`; // Snappy but smooth ease-out
+                    strip.style.transition = `transform ${duration}s cubic-bezier(0.2, 0.8, 0.2, 1)`;
                     strip.style.transform = `translateY(-${targetPosition}px)`;
                 });
 
-                // Set timeout to finish spin normally if not skipped
-                // Max duration is 1.0 + 0.2 = 1.2s
                 spinTimeout = setTimeout(() => {
                     finishSpin(results);
                 }, 1300);
             });
 
             function skipSpin() {
-                clearTimeout(spinTimeout); // Cancel the normal finish
-
+                clearTimeout(spinTimeout);
                 const results = JSON.parse(spinBtn.dataset.results);
-
                 reelStrips.forEach((strip, index) => {
                     const targetIndex = results[index];
                     const targetPosition = ((loops - 2) * numIcons + targetIndex) * iconHeight;
-
-                    // Immediately jump to final position
                     strip.style.transition = 'none';
                     strip.style.transform = `translateY(-${targetPosition}px)`;
                 });
-
                 finishSpin(results);
             }
 
             function finishSpin(results) {
                 isSpinning = false;
-                spinBtn.textContent = "SPIN"; // Reset button text
+                spinBtn.textContent = "SPIN";
                 spinSound.pause();
 
                 const img1 = images[results[0]];
@@ -651,14 +1007,728 @@
             }
 
             function triggerWin() {
-                // Show Scam Overlay instead of immediate win
                 scamOverlay.style.display = 'flex';
             }
 
-            // Button Event Listeners
+            // --- GAME LOGIC ---
+            const startGameBtn = document.getElementById('startGameBtn');
+            const gameOverlay = document.getElementById('gameOverlay');
+            const gameCanvas = document.getElementById('gameCanvas');
+            const finishGameBtn = document.getElementById('finishGameBtn');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const healthBarFill = document.getElementById('healthBarFill');
+
+            // Menus
+            const postGameMenu = document.getElementById('postGameMenu');
+            const shopMenu = document.getElementById('shopMenu');
+            const restartBtn = document.getElementById('restartBtn');
+            const shopBtn = document.getElementById('shopBtn');
+            const shopMoneyDisplay = document.getElementById('shopMoneyDisplay');
+
+            let gameRunning = false;
+            let isPaused = false;
+            let ctx = gameCanvas.getContext('2d');
+            let playerX = 0;
+            let bullets = [];
+            let enemies = [];
+            let particles = [];
+            let bossMissiles = [];
+            let lastTime = 0;
+            let enemySpawnTimer = 0;
+            let gameOver = false;
+            let gameElapsedTime = 0;
+            let playerHP = 10;
+            let maxPlayerHP = 10;
+
+            // Boss State
+            let loadingProgress = 0; // 0 to 40
+            let bossActive = false;
+            let boss = {
+                x: 0, y: -250, w: 200, h: 200,
+                hp: 200, maxHp: 200,
+                phase: 1, // 1=static, 2=moving
+                moveTimer: 0,
+                attackTimer: 0,
+                laserState: 0, // 0=none, 1=warn, 2=fire, 3=cooldown
+                laserTimer: 0,
+                targetX: 0
+            };
+
+            // State
+            let score = 0;
+            let autoFireLevel = 0; // 0=none, 1=7/s, 2=14/s
+            let hasMirrorShip = false;
+            let isMouseDown = false;
+            let lastShotTime = 0;
+
+            // Global access for HTML onclicks
+            window.buyUpgrade = function (type) {
+                if (type === 1) {
+                    if (score >= 10) { score -= 10; autoFireLevel = 1; }
+                } else if (type === 2) {
+                    if (score >= 30) { score -= 30; autoFireLevel = 2; }
+                } else if (type === 3) {
+                    if (score >= 50) { score -= 50; hasMirrorShip = true; }
+                }
+                updateShopUI();
+            };
+
+            window.closeShop = function () {
+                shopMenu.style.display = 'none';
+                if (gameRunning && !gameOver) {
+                    isPaused = false; // Resume game
+                    lastTime = performance.now(); // Reset time to avoid jump
+                } else {
+                    postGameMenu.style.display = 'block';
+                }
+            }
+
+            window.openShopIngame = function () {
+                if (!gameRunning || gameOver) return;
+                isPaused = true;
+                shopMenu.style.display = 'block';
+                updateShopUI();
+            }
+
+            window.cheatScore = function () {
+                let newScore = prompt("Mennyi pénzt szeretnél?", score);
+                if (newScore !== null) {
+                    let parsed = parseInt(newScore);
+                    if (!isNaN(parsed)) {
+                        score = parsed;
+                        updateShopUI(); // Updates displays
+                    }
+                }
+            }
+
+            function updateShopUI() {
+                shopMoneyDisplay.textContent = score;
+                scoreDisplay.textContent = score; // Sync main display
+
+                document.getElementById('upg1Btn').disabled = (score < 10 || autoFireLevel >= 1);
+                document.getElementById('upg1Btn').innerText = autoFireLevel >= 1 ? "MEGVÉVE" : "10 Pont - Automáta (14/mp)";
+
+                document.getElementById('upg2Btn').disabled = (score < 30 || autoFireLevel >= 2);
+                document.getElementById('upg2Btn').innerText = autoFireLevel >= 2 ? "MEGVÉVE" : "30 Pont - Gyorstüzelés (20/mp + Dupla)";
+
+                document.getElementById('upg3Btn').disabled = (score < 50 || hasMirrorShip);
+                document.getElementById('upg3Btn').innerText = hasMirrorShip ? "MEGVÉVE" : "50 Pont - Tükörhajó";
+            }
+
+            startGameBtn.addEventListener('click', () => {
+                startGame();
+            });
+
+            function startGame() {
+                gameOverlay.style.display = 'block';
+                postGameMenu.style.display = 'none';
+                shopMenu.style.display = 'none';
+
+                gameRunning = true;
+                isPaused = false;
+                gameOver = false;
+                lastTime = performance.now();
+                gameElapsedTime = 0;
+                loadingProgress = 0;
+                bossActive = false;
+                playerHP = 10;
+                updateHealthUI();
+
+                bullets = [];
+                enemies = [];
+                particles = [];
+                bossMissiles = [];
+                isMouseDown = false;
+
+                // Initialize Boss
+                boss.w = 200; boss.h = 200;
+                boss.x = window.innerWidth / 2 - 100;
+                boss.y = -250;
+                boss.hp = 200;
+                boss.phase = 1;
+                boss.laserState = 0;
+
+                // Set canvas size
+                gameCanvas.width = window.innerWidth;
+                gameCanvas.height = window.innerHeight;
+                playerX = gameCanvas.width / 2;
+
+                scoreDisplay.textContent = score;
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function updateHealthUI() {
+                const pct = Math.max(0, (playerHP / maxPlayerHP) * 100);
+                if (healthBarFill) {
+                    healthBarFill.style.width = pct + "%";
+                    if (playerHP <= 3) healthBarFill.style.backgroundColor = "red";
+                    else if (playerHP <= 6) healthBarFill.style.backgroundColor = "orange";
+                    else healthBarFill.style.backgroundColor = "#00ff00";
+                }
+            }
+
+            finishGameBtn.addEventListener('click', () => {
+                // Hard exit
+                gameRunning = false;
+                gameOverlay.style.display = 'none';
+            });
+
+            restartBtn.addEventListener('click', startGame);
+
+            shopBtn.addEventListener('click', () => {
+                postGameMenu.style.display = 'none';
+                shopMenu.style.display = 'block';
+                updateShopUI();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.key === 'w' || e.key === 'W') && gameRunning && !bossActive) {
+                    loadingProgress = 40; // Cheat: Instant Boss
+                }
+            });
+
+            gameCanvas.addEventListener('mousemove', (e) => { if (!isPaused) playerX = e.clientX; });
+            gameCanvas.addEventListener('mousedown', (e) => {
+                isMouseDown = true;
+                if (!gameOver && gameRunning && !isPaused) {
+                    spawnBullet();
+                }
+            });
+            gameCanvas.addEventListener('mouseup', () => { isMouseDown = false; });
+            gameCanvas.addEventListener('mouseleave', () => { isMouseDown = false; }); // Safety
+
+            function spawnBullet() {
+                if (isPaused) return;
+
+                // Main Ship Bullets (Upwards)
+                if (autoFireLevel === 2) {
+                    // Double Shot Logic
+                    bullets.push({ x: playerX - 15, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
+                    bullets.push({ x: playerX + 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
+                } else {
+                    // Single Shot
+                    bullets.push({ x: playerX - 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
+                }
+
+                // Second Ship (Side Ship)
+                if (hasMirrorShip) {
+                    // Calculate Y position based on playerX (Map 0..Width to Height..0 inverted or similar?)
+                    // Let's map X (0 to Width) to Y (Height-50 to 50) linearly
+                    // But maybe user wants it to follow? "ne lent hanem a képernyő bal oldalán"
+                    // Let's say it moves up and down on the left side.
+                    // We'll use a saved variable or just calculate it on the fly in loop.
+                    // For spawning, we recalculate position to match draw logic.
+
+                    let ratio = playerX / gameCanvas.width;
+                    let sideY = (gameCanvas.height - 100) * ratio + 50;
+
+                    if (autoFireLevel === 2) {
+                        bullets.push({ x: 40, y: sideY - 10, width: 10, height: 10, vx: 10, vy: 0 }); // Shoot Right
+                        bullets.push({ x: 40, y: sideY + 10, width: 10, height: 10, vx: 10, vy: 0 });
+                    } else {
+                        bullets.push({ x: 40, y: sideY, width: 10, height: 10, vx: 10, vy: 0 });
+                    }
+                }
+            }
+
+            let gameWon = false;
+
+            function gameLoop(timestamp) {
+                if (!gameRunning) return;
+
+                const deltaTime = timestamp - lastTime;
+                lastTime = timestamp;
+
+                if (isPaused) {
+                    requestAnimationFrame(gameLoop);
+                    return;
+                }
+
+                if (gameWon) {
+                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+                    ctx.font = "bold 50px 'Outfit', sans-serif";
+                    ctx.fillStyle = "#00ff00"; // Green
+                    ctx.textAlign = "center";
+                    ctx.fillText("NYERTÉL!", gameCanvas.width / 2, gameCanvas.height / 2 - 40);
+                    ctx.fillStyle = "white";
+                    ctx.font = "30px 'Outfit', sans-serif";
+                    ctx.fillText("KAPTÁL 1000 PÉNZT!", gameCanvas.width / 2, gameCanvas.height / 2 + 20);
+
+                    // Stop loop basically by not requesting frame, or just return
+                    // But we want to allow closing via Finish button
+                    return;
+                }
+
+                if (!gameOver) {
+                    gameElapsedTime += deltaTime;
+
+                    // Loading / Boss Timer
+                    if (!bossActive) {
+                        if (loadingProgress < 40) {
+                            loadingProgress += deltaTime / 1000;
+                        }
+                        if (loadingProgress >= 40) {
+                            bossActive = true;
+                            loadingProgress = 40;
+                            boss.y = -250;
+                        }
+                    }
+
+                    // Auto Fire Logic
+                    if (isMouseDown && autoFireLevel > 0) {
+                        const fireInterval = autoFireLevel === 2 ? (1000 / 20) : (1000 / 14);
+                        if (timestamp - lastShotTime > fireInterval) {
+                            spawnBullet();
+                            lastShotTime = timestamp;
+                        }
+                    }
+                }
+
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+                if (gameOver) {
+                    ctx.font = "bold 60px 'Outfit', sans-serif";
+                    ctx.fillStyle = "red";
+                    ctx.textAlign = "center";
+                    ctx.fillText("vesztettélxdddd", gameCanvas.width / 2, gameCanvas.height / 2);
+                }
+
+                // Draw Player
+                drawSpaceship(playerX, gameCanvas.height - 50);
+
+                // Draw Side Ship
+                if (hasMirrorShip) {
+                    let ratio = playerX / gameCanvas.width;
+                    let sideY = (gameCanvas.height - 100) * ratio + 50;
+
+                    // Draw rotated small ship on left (x=20)
+                    ctx.fillStyle = "orange"; // Distinct color
+                    ctx.fillRect(10, sideY - 10, 20, 20); // Body
+                    ctx.fillStyle = "yellow";
+                    ctx.fillRect(30, sideY - 5, 10, 10); // Nose pointing right
+                }
+
+                // Draw Loading Bar
+                if (!bossActive && !gameOver) {
+                    let barW = 300;
+                    let barH = 10;
+                    let lx = (gameCanvas.width / 2) - (barW / 2);
+                    let ly = gameCanvas.height - 30; // Bottom center
+
+                    ctx.fillStyle = "#555";
+                    ctx.fillRect(lx, ly, barW, barH);
+
+                    let fillW = (loadingProgress / 40) * barW;
+                    ctx.fillStyle = "#00ffff";
+                    ctx.fillRect(lx, ly, fillW, barH);
+
+                    ctx.strokeStyle = "white";
+                    ctx.strokeRect(lx, ly, barW, barH);
+
+                    ctx.fillStyle = "white";
+                    ctx.font = "16px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(`BOSS BETÖLTÉS: ${Math.floor((loadingProgress / 40) * 100)}%`, gameCanvas.width / 2, ly - 10);
+                }
+
+                if (!gameOver) {
+                    // Update and Draw Bullets
+                    ctx.fillStyle = "#00ff00";
+                    for (let i = bullets.length - 1; i >= 0; i--) {
+                        let b = bullets[i];
+
+                        // Handle custom velocities if existent (for side ship)
+                        // If vx/vy missing, assume standard (0, -scaling)
+                        // The provided vx/vy are fixed pixel movements per frame.
+                        if (b.vx !== undefined) {
+                            b.x += b.vx;
+                            b.y += b.vy;
+                        } else {
+                            // Fallback for old bullets just in case, or if we want main ship bullets to scale with deltaTime
+                            // For consistency with new vx/vy, let's assume main ship bullets also use fixed vy.
+                            // If the original behavior of deltaTime scaling is desired, this line should be:
+                            // b.y -= (gameCanvas.height / 1000) * deltaTime;
+                            // But the instruction provided `vy: -10` for main bullets, implying fixed speed.
+                            b.y += b.vy; // Use the fixed vy from spawnBullet
+                        }
+
+                        ctx.fillRect(b.x - 5, b.y, b.width, b.height);
+                        if (b.y < 0 || b.x < 0 || b.x > gameCanvas.width || b.y > gameCanvas.height) bullets.splice(i, 1);
+                    }
+
+                    // Boss Mechanics
+                    if (bossActive) {
+                        // Move Boss into position (Y=150)
+                        if (boss.y < 150) {
+                            boss.y += (100 * deltaTime / 1000); // Slide down
+                        } else {
+                            // Phase 2 Movement
+                            if (boss.hp <= 100) {
+                                boss.moveTimer += deltaTime;
+                                boss.x = (gameCanvas.width / 2 - boss.w / 2) + Math.sin(boss.moveTimer / 1000) * 200;
+                                boss.y = 150 + Math.sin(boss.moveTimer / 1200) * 40;
+                            } else {
+                                boss.x = (gameCanvas.width / 2 - boss.w / 2); // Center
+                            }
+                        }
+
+                        // Render Boss
+                        let bossScale = 0.5 + 0.5 * (boss.hp / 200);
+                        let currW = boss.w * bossScale;
+                        let currH = boss.h * bossScale;
+                        let drawX = boss.x + (boss.w - currW) / 2;
+                        let drawY = boss.y + (boss.h - currH) / 2;
+
+                        ctx.fillStyle = boss.hp > 100 ? "red" : "darkred";
+                        ctx.fillRect(drawX, drawY, currW, currH);
+
+                        // Boss HP Bar
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(drawX, drawY - 20, currW, 10);
+                        ctx.fillStyle = "lime";
+                        ctx.fillRect(drawX, drawY - 20, currW * (boss.hp / 200), 10);
+
+                        // Attacks
+                        boss.attackTimer += deltaTime;
+                        // Bouncing Missiles every 3s
+                        if (boss.attackTimer > 3000) {
+                            // Calculate initial vector towards player for start
+                            let startDx = playerX - (boss.x + boss.w / 2);
+                            let startDy = (gameCanvas.height - 50) - (boss.y + boss.h);
+                            let dist = Math.sqrt(startDx * startDx + startDy * startDy);
+                            let ivx = (startDx / dist) * 5;
+                            let ivy = (startDy / dist) * 5;
+
+                            bossMissiles.push({
+                                x: boss.x + boss.w / 2,
+                                y: boss.y + boss.h,
+                                w: 20, h: 20,
+                                vx: ivx, vy: ivy
+                            });
+                            boss.attackTimer = 0;
+                        }
+
+                        // Laser Attack
+                        if (Math.random() < 0.005 && boss.laserState === 0) {
+                            boss.laserState = 1; // Warn
+                            boss.laserTimer = 1500;
+                        }
+
+                        if (boss.laserState > 0) {
+                            boss.laserTimer -= deltaTime;
+                            let centerX = boss.x + boss.w / 2;
+
+                            if (boss.laserState === 1) { // Warning
+                                ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+                                ctx.fillRect(centerX - 20, boss.y + boss.h, 40, gameCanvas.height);
+                                if (boss.laserTimer <= 0) {
+                                    boss.laserState = 2; // Fire
+                                    boss.laserTimer = 3000;
+                                }
+                            } else if (boss.laserState === 2) { // Fire
+                                ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
+                                ctx.fillRect(centerX - 40, boss.y + boss.h, 80, gameCanvas.height);
+
+                                // Laser Collision
+                                if (playerX > centerX - 40 && playerX < centerX + 40) {
+                                    takeDamage(1);
+                                }
+
+                                if (boss.laserTimer <= 0) {
+                                    boss.laserState = 3;
+                                    boss.laserTimer = 2000; // Cooldown
+                                }
+                            } else if (boss.laserState === 3) {
+                                if (boss.laserTimer <= 0) boss.laserState = 0;
+                            }
+                        }
+
+                        // Bullet vs Boss
+                        for (let i = bullets.length - 1; i >= 0; i--) {
+                            let b = bullets[i];
+                            if (rectIntersect(b.x, b.y, b.width, b.height, drawX, drawY, currW, currH)) {
+                                boss.hp -= 1;
+                                createExplosion(b.x, b.y, "orange");
+                                bullets.splice(i, 1);
+                                if (boss.hp <= 0) {
+                                    score += 1000;
+                                    scoreDisplay.textContent = score;
+                                    bossActive = false;
+                                    gameWon = true; // Trigger Win
+                                }
+                            }
+                        }
+                    }
+
+                    // Boss Missiles Update (Bouncing)
+                    for (let i = bossMissiles.length - 1; i >= 0; i--) {
+                        let m = bossMissiles[i];
+
+                        m.x += m.vx;
+                        m.y += m.vy;
+
+                        // Bounce Logic
+                        let bounced = false;
+                        // Only reflect Y, no horizontal bounce
+                        if (m.y <= 0 || m.y + m.h >= gameCanvas.height) {
+                            m.vy *= -1; // Reflect Y
+                            bounced = true;
+                        }
+
+                        if (bounced) {
+                            let angle = Math.random() * Math.PI * 2;
+                            // Enforce non-horizontal bounce (vertical component must be significant)
+                            // We want vy to be at least, say, 0.3 of speed
+                            // Loop until Angle is safe? Or just clamp?
+                            let safe = false;
+                            while (!safe) {
+                                angle = Math.random() * Math.PI * 2;
+                                if (Math.abs(Math.sin(angle)) > 0.3) safe = true;
+                            }
+
+                            let speed = 5;
+                            m.vx = Math.cos(angle) * speed;
+                            m.vy = Math.sin(angle) * speed;
+
+                            // Pull back in bounds slightly to avoid sticking
+                            // Only for Y, as X is not bouncing off walls
+                            if (m.y <= 0) m.y = 1;
+                            if (m.y + m.h >= gameCanvas.height) m.y = gameCanvas.height - m.h - 1;
+                        }
+
+                        ctx.fillStyle = "purple";
+                        ctx.fillRect(m.x, m.y, m.w, m.h);
+
+                        if (rectIntersect(m.x, m.y, m.w, m.h, playerX - 20, gameCanvas.height - 50, 40, 40)) {
+                            takeDamage(1);
+                            bossMissiles.splice(i, 1);
+                        }
+                    }
+
+                    // Spawning
+                    let spawnRate = bossActive ? 333 : 1500; // 3/s = 333ms
+                    if (!bossActive) {
+                        if (gameElapsedTime > 5000) {
+                            const progress = Math.min((gameElapsedTime - 5000) / 15000, 1);
+                            spawnRate = 1500 - (1400 * progress);
+                        }
+                    } else {
+                        spawnRate = 333; // Fixed 3 per sec if boss
+                    }
+
+                    enemySpawnTimer += deltaTime;
+                    while (enemySpawnTimer > spawnRate) {
+                        enemySpawnTimer -= spawnRate;
+                        enemies.push({ x: Math.random() * (gameCanvas.width - 40) + 20, y: -50, width: 40, height: 40, color: `hsl(${Math.random() * 360}, 100%, 50%)` });
+                    }
+
+                    // Update Entities
+                    for (let i = enemies.length - 1; i >= 0; i--) {
+                        let e = enemies[i];
+                        e.y += (gameCanvas.height / 5000) * deltaTime;
+                        ctx.fillStyle = e.color;
+                        ctx.fillRect(e.x - 20, e.y - 20, e.width, e.height);
+                        if (e.y > gameCanvas.height) {
+                            takeDamage(1);
+                            enemies.splice(i, 1);
+                        } else if (rectIntersect(e.x - 20, e.y - 20, e.width, e.height, playerX - 20, gameCanvas.height - 50, 40, 40)) {
+                            takeDamage(1);
+                            enemies.splice(i, 1);
+                        }
+                    }
+
+                    // Collision
+                    for (let i = bullets.length - 1; i >= 0; i--) {
+                        for (let j = enemies.length - 1; j >= 0; j--) {
+                            let b = bullets[i]; let e = enemies[j];
+                            if (rectIntersect(b.x - 5, b.y, 10, 10, e.x - 20, e.y - 20, 40, 40)) {
+                                createExplosion(e.x, e.y, e.color);
+                                bullets.splice(i, 1); enemies.splice(j, 1);
+                                score++;
+                                scoreDisplay.textContent = score;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Particles
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= deltaTime;
+                        ctx.fillStyle = p.color; ctx.globalAlpha = p.life / 500; ctx.fillRect(p.x, p.y, 4, 4); ctx.globalAlpha = 1;
+                        if (p.life <= 0) particles.splice(i, 1);
+                    }
+                }
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function drawSpaceship(x, y) {
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(x - 2, y - 20, 4, 10);
+                ctx.fillRect(x - 10, y - 10, 20, 10);
+                ctx.fillRect(x - 20, y, 40, 10);
+                ctx.fillStyle = "#00ccff";
+                ctx.fillRect(x - 5, y - 5, 10, 5);
+            }
+
+            function createExplosion(x, y, color) {
+                for (let i = 0; i < 10; i++) {
+                    particles.push({
+                        x: x,
+                        y: y,
+                        vx: (Math.random() - 0.5) * 5,
+                        vy: (Math.random() - 0.5) * 5,
+                        life: 500,
+                        color: color
+                    });
+                }
+            }
+
+            function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
+                return x2 < x1 + w1 && x2 + w2 > x1 && y2 < y1 + h1 && y2 + h2 > y1;
+            }
+
+            function takeDamage(amount) {
+                if (gameOver) return;
+                playerHP -= amount;
+                updateHealthUI();
+                createExplosion(playerX, gameCanvas.height - 40, "red");
+                if (playerHP <= 0) {
+                    triggerGameOver();
+                }
+            }
+
+            function triggerGameOver() {
+                gameOver = true;
+                // Spawn 2 viruses
+                createGameVirusPopup(1);
+                createGameVirusPopup(2);
+            }
+
+            let activeGameViruses = 0;
+
+            function createGameVirusPopup(index) {
+                createVirusPopup(100 + index, true);
+            }
+
+
+            // --- VIRUS ATTACK LOGIC ---
+            const virusImages = [
+                '../wpviking/virus_alert_window.png',
+                '../wpviking/claim_prize_banner.png',
+                '../wpviking/sexy_single_ad.png',
+                '../wpviking/free_money_banner.png',
+                '../wpviking/logo.png',
+                '../wpviking/201.gif'
+            ];
+
+            const virusTexts = [
+                "VIRUS DETECTED!", "UNABLE TO STOP PROCESS", "YOUR COMPUTER IS INFECTED",
+                "DOWNLOAD RAM FREE", "HOT SINGLES IN YOUR AREA", "YOU ARE THE 1,000,000TH VISITOR",
+                "CLICK HERE TO CLAIM PRIZE", "SYSTEM32 DELETED", "ERROR 404: BRAIN NOT FOUND",
+                "SEND MONEY NOW", "WIN IPHONE 75!!!", "TAKE SURVEY NOW", "DOWNLOAD ANTI-VIRUS",
+                "INSTALL TOOLBAR", "FREE MP3 DOWNLOAD", "CONGRATULATIONS!", "YOUR IP IS PUBLIC",
+                "WEBCAM ACTIVATED", "DATA CORRUPTION IMMINENT", "ILLEGAL OPERATION", "FATAL EXCEPTION 0E"
+            ];
+
+            const virusTitles = [
+                "WARNING", "CRITICAL ERROR", "CONGRATS!", "HELLO?", "SYSTEM ALERT",
+                "WINNER", "ADVERTISEMENT", "SURVEY", "DOWNLOAD", "IMPORTANT",
+                "SECURITY", "CMD.EXE", "PRIZE NOTIFICATION"
+            ];
+
+            function createVirusPopup(index, isGameVirus = false) {
+                const div = document.createElement('div');
+                const styles = ['style-classic', 'style-terminal', 'style-alert', 'style-flashy'];
+                const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+                div.className = 'popup ' + randomStyle;
+                if (isGameVirus) activeGameViruses++;
+
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const popupWidth = Math.min(300, viewportWidth * 0.8);
+
+                div.style.width = popupWidth + 'px';
+
+                const rX = Math.floor(Math.random() * (viewportWidth - popupWidth));
+                const rY = Math.floor(Math.random() * (viewportHeight - 200));
+
+                div.style.left = rX + 'px';
+                div.style.top = rY + 'px';
+                div.style.zIndex = 5000 + index;
+
+                let contentHtml = '';
+                if (Math.random() > 0.6) {
+                    const img = virusImages[Math.floor(Math.random() * virusImages.length)];
+                    contentHtml = `<img src="${img}" alt="spam">`;
+                } else {
+                    const txt = virusTexts[Math.floor(Math.random() * virusTexts.length)];
+                    const fontSize = Math.floor(Math.random() * 10) + 16;
+                    contentHtml = `<div style="font-size: ${fontSize}px; font-weight: bold;">${txt}</div><br><button style="cursor:pointer; padding: 5px;">${Math.random() > 0.5 ? 'OK' : 'CANCEL'}</button>`;
+                }
+
+                const title = virusTitles[Math.floor(Math.random() * virusTitles.length)];
+
+                div.innerHTML = `
+                    <div class="popup-header">
+                        <span>${title}</span>
+                        <div class="popup-close">X</div>
+                    </div>
+                    <div class="popup-content">
+                        ${contentHtml}
+                    </div>
+                `;
+
+                // Close handler
+                const closeBtn = div.querySelector('.popup-close');
+                closeBtn.onclick = function () {
+                    div.remove();
+                    if (isGameVirus) {
+                        activeGameViruses--;
+                        if (virusContainer.children.length === 0) {
+                            // SHOW MENU INSTEAD OF CLOSE
+                            postGameMenu.style.display = 'block';
+                        }
+                    } else {
+                        if (virusContainer.children.length === 0) {
+                            showRealWin();
+                        }
+                    }
+                };
+
+                virusContainer.appendChild(div);
+            }
+
+            function startVirusAttack() {
+                const count = 15;
+                for (let i = 0; i < count; i++) {
+                    createVirusPopup(i);
+                }
+            }
+
+            // SPACE key listener to clear viruses
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' && virusContainer.children.length > 0) {
+                    e.preventDefault();
+                    if (gameRunning) {
+                        virusContainer.innerHTML = '';
+                        // SHOW MENU
+                        postGameMenu.style.display = 'block';
+                        // Stop game processing physically but don't close overlay
+                    } else {
+                        virusContainer.innerHTML = '';
+                        showRealWin();
+                    }
+                }
+            });
+
             claimBtn.addEventListener('click', () => {
                 scamOverlay.style.display = 'none';
-                showRealWin();
+                startVirusAttack();
             });
 
             refuseBtn.addEventListener('click', () => {
@@ -667,17 +1737,18 @@
             });
 
             function showRealWin() {
-                // Play Win Sound
                 winSound.currentTime = 0;
                 winSound.play().catch(e => console.log("Audio play failed", e));
-
-                // Show Overlay
                 winOverlay.style.display = 'flex';
 
-                // Confetti
                 const duration = 5 * 1000;
                 const animationEnd = Date.now() + duration;
-                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 2000 };
+                const defaults = {
+                    startVelocity: 30,
+                    spread: 360,
+                    ticks: 60,
+                    zIndex: 2000
+                };
 
                 function randomInRange(min, max) {
                     return Math.random() * (max - min) + min;
@@ -685,14 +1756,24 @@
 
                 const interval = setInterval(function () {
                     const timeLeft = animationEnd - Date.now();
-
                     if (timeLeft <= 0) {
                         return clearInterval(interval);
                     }
-
                     const particleCount = 50 * (timeLeft / duration);
-                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                    confetti(Object.assign({}, defaults, {
+                        particleCount,
+                        origin: {
+                            x: randomInRange(0.1, 0.3),
+                            y: Math.random() - 0.2
+                        }
+                    }));
+                    confetti(Object.assign({}, defaults, {
+                        particleCount,
+                        origin: {
+                            x: randomInRange(0.7, 0.9),
+                            y: Math.random() - 0.2
+                        }
+                    }));
                 }, 250);
             }
         });
