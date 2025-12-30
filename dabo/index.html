@@ -11,6 +11,84 @@
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        /* Chroma Key (Green/Black Screen Removal) */
+        .chroma-key-green {
+            filter: url(#chroma-key-green-filter);
+        }
+
+        .chroma-key-black {
+            mix-blend-mode: screen;
+        }
+
+        .meme-gif {
+            position: absolute;
+            pointer-events: none;
+            display: none;
+        }
+
+        .meme-full {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .meme-side {
+            height: 40%;
+            top: 30%;
+            object-fit: contain;
+        }
+
+        .meme-left {
+            left: 0;
+        }
+
+        .meme-right {
+            right: 0;
+        }
+
+        #gameBackground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+
+        #memeLayerBehind {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        #memeLayerAbove {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        #gameCanvas {
+            position: relative;
+            z-index: 3;
+            background: transparent !important;
+        }
+
+        .game-score,
+        .health-display,
+        .game-ui,
+        .menu-overlay {
+            z-index: 4002;
+        }
+
         /* Game UI Styles */
         .game-score {
             position: absolute;
@@ -166,6 +244,42 @@
             cursor: pointer;
         }
 
+        .level2-btn {
+            background: #ff9800;
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            /* Shown after boss kill */
+        }
+
+        .level2-btn.centered {
+            position: fixed;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            padding: 20px 40px;
+            z-index: 5000;
+        }
+
+        .wasd-tutorial {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            z-index: 5001;
+            display: none;
+            opacity: 0.9;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
         .health-display {
             position: absolute;
             top: 20px;
@@ -187,6 +301,25 @@
             border: 2px solid white;
             border-radius: 10px;
             overflow: hidden;
+        }
+
+        .volume-display {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 4002;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .volume-slider {
+            width: 150px;
+            cursor: pointer;
         }
 
         .health-bar-fill {
@@ -765,6 +898,20 @@
 </head>
 
 <body>
+    <!-- SVG Chroma Key Filters -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" xmlns="http://www.w3.org/2000/svg">
+        <filter id="chroma-key-green-filter" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                1.5 -3 1.5 1 0
+            " />
+            <feComponentTransfer>
+                <feFuncA type="table" tableValues="0 1" />
+            </feComponentTransfer>
+        </filter>
+    </svg>
     <div class="content-wrapper">
         <div class="message">
             Boldog újévet!
@@ -840,7 +987,11 @@
 
     <!-- Game Overlay -->
     <div class="game-overlay" id="gameOverlay">
+        <div id="memeLayerBehind"></div>
+        <div id="gameBackground"></div>
+        <div id="memeLayerAbove"></div>
         <canvas id="gameCanvas"></canvas>
+        <img id="wasdTutorial" src="wasd.png" class="wasd-tutorial" alt="WASD Control Tutorial">
         <div class="game-score">Pénz: <span id="scoreDisplay" style="cursor: pointer; text-decoration: underline;"
                 onclick="cheatScore()" title="Kattints a csaláshoz!">0</span></div>
 
@@ -851,7 +1002,13 @@
             </div>
         </div>
 
+        <div class="volume-display">
+            Hangerő:
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.4">
+        </div>
+
         <div class="game-ui">
+            <button class="level2-btn" id="level2Btn" onclick="startLevel2()">MÁSODIK PÁLYA</button>
             <button class="ingame-shop-btn" id="ingameShopBtn" onclick="openShopIngame()">BOLT</button>
             <button class="finish-btn" id="finishGameBtn">BEFEJEZÉS</button>
         </div>
@@ -894,6 +1051,8 @@
     <!-- Sounds -->
     <audio id="spinSound" src="spin.mp3" preload="auto"></audio>
     <audio id="winSound" src="win.mp3" preload="auto"></audio>
+    <audio id="bgMusic" src="zene.mp3" preload="auto" loop></audio>
+    <audio id="bgMusic2" src="zene2.mp3" preload="auto"></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -903,6 +1062,22 @@
             video.play().catch(error => {
                 console.log("Az automatikus lejátszás hanggal nem sikerült:", error);
             });
+
+            // Initial volume setup
+            const bgMusic = document.getElementById('bgMusic');
+            const bgMusic2 = document.getElementById('bgMusic2');
+            if (bgMusic) bgMusic.volume = 0.4;
+            if (bgMusic2) bgMusic2.volume = 0.4;
+
+            const volumeSlider = document.getElementById('volumeSlider');
+            if (volumeSlider) {
+                volumeSlider.addEventListener('input', (e) => {
+                    const vol = e.target.value;
+                    if (bgMusic) bgMusic.volume = vol;
+                    if (bgMusic2) bgMusic2.volume = vol;
+                });
+            }
+
 
             // Slot Machine Logic
             const images = ['1.png', '2.gif', '3.png', '4.png'];
@@ -1025,8 +1200,24 @@
             const shopBtn = document.getElementById('shopBtn');
             const shopMoneyDisplay = document.getElementById('shopMoneyDisplay');
 
+            let maxPlayerHP = 10;
             let gameRunning = false;
             let isPaused = false;
+
+            // Focus handling (Moved here to avoid TDZ)
+            document.addEventListener('visibilitychange', () => {
+                const bg1 = document.getElementById('bgMusic');
+                const bg2 = document.getElementById('bgMusic2');
+                const activeMusic = (typeof currentLevel !== 'undefined' && currentLevel === 2) ? bg2 : bg1;
+                if (document.hidden) {
+                    if (activeMusic && gameRunning && !isPaused) activeMusic.pause();
+                } else {
+                    if (activeMusic && gameRunning && !isPaused) {
+                        activeMusic.play().catch(e => console.log("Audio play failed on return", e));
+                    }
+                }
+            });
+
             let ctx = gameCanvas.getContext('2d');
             let playerX = 0;
             let bullets = [];
@@ -1038,7 +1229,60 @@
             let gameOver = false;
             let gameElapsedTime = 0;
             let playerHP = 10;
-            let maxPlayerHP = 10;
+
+            // Level 2 State
+            let currentLevel = 1;
+            let level2Phase = 0; // 0=none, 1=top spawning, 2=free move+rotate, 3=homing predators
+            let playerY = 0;
+            let playerAngle = 0;
+            let keysPressed = {};
+            let mouseX = 0;
+            let mouseY = 0;
+            let dashCooldown = 0;
+            let dashTimer = 0;
+            let wasdShowState = 0; // 0=waiting, 1=showing, 2=keyPressed, 3=done
+            let wasdHideTimer = 0;
+
+            window.addEventListener('keydown', (e) => { keysPressed[e.key.toLowerCase()] = true; });
+            window.addEventListener('keyup', (e) => { keysPressed[e.key.toLowerCase()] = false; });
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            window.startLevel2 = function () {
+                currentLevel = 2;
+                level2Phase = 1;
+                gameRunning = true;
+                isPaused = false;
+                gameOver = false;
+                gameWon = false;
+                lastTime = performance.now();
+                gameElapsedTime = 0;
+                playerHP = 10;
+                updateHealthUI();
+                bullets = [];
+                enemies = [];
+                particles = [];
+                bossMissiles = [];
+                hasMirrorShip = false; // Törlődjön a második pályán
+
+                bgMusic.pause();
+                bgMusic2.currentTime = 32;
+                bgMusic2.play().catch(e => console.log("Audio play failed", e));
+
+                gameCanvas.width = window.innerWidth;
+                gameCanvas.height = window.innerHeight;
+                playerX = gameCanvas.width / 2;
+                playerY = gameCanvas.height - 50;
+
+                const btn = document.getElementById('level2Btn');
+                btn.style.display = 'block';
+                btn.classList.remove('centered');
+                gameOverlay.style.display = 'block';
+                postGameMenu.style.display = 'none';
+                requestAnimationFrame(gameLoop);
+            };
 
             // Boss State
             let loadingProgress = 0; // 0 to 40
@@ -1053,6 +1297,26 @@
                 laserTimer: 0,
                 targetX: 0
             };
+
+            // Meme System State
+            let memeTimers = { alt23: 0, m5: 0, m6: 0, m1: 0 };
+            let altMemeToggle = false;
+            let bossMemeTriggered = false;
+
+            function showMeme(src, layerId, duration, className) {
+                const layer = document.getElementById(layerId);
+                if (!layer) return;
+
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'meme-gif ' + className;
+                img.style.display = 'block';
+                layer.appendChild(img);
+
+                setTimeout(() => {
+                    if (img.parentNode) img.remove();
+                }, duration);
+            }
 
             // State
             let score = 0;
@@ -1077,6 +1341,7 @@
                 shopMenu.style.display = 'none';
                 if (gameRunning && !gameOver) {
                     isPaused = false; // Resume game
+                    bgMusic.play().catch(e => console.log("Audio play failed", e));
                     lastTime = performance.now(); // Reset time to avoid jump
                 } else {
                     postGameMenu.style.display = 'block';
@@ -1086,6 +1351,7 @@
             window.openShopIngame = function () {
                 if (!gameRunning || gameOver) return;
                 isPaused = true;
+                bgMusic.pause();
                 shopMenu.style.display = 'block';
                 updateShopUI();
             }
@@ -1126,19 +1392,47 @@
 
                 gameRunning = true;
                 isPaused = false;
+                bgMusic.currentTime = 0;
+                bgMusic.play().catch(e => console.log("Audio play failed", e));
                 gameOver = false;
                 lastTime = performance.now();
                 gameElapsedTime = 0;
                 loadingProgress = 0;
                 bossActive = false;
+
+                // Level 1 Reset
+                currentLevel = 1;
+                level2Phase = 0;
                 playerHP = 10;
                 updateHealthUI();
+                playerAngle = 0;
+                dashCooldown = 0;
+                dashTimer = 0;
+                wasdShowState = 0;
+                const wasdImg = document.getElementById('wasdTutorial');
+                if (wasdImg) wasdImg.style.display = 'none';
+
+                const btn = document.getElementById('level2Btn');
+                if (btn) btn.classList.remove('centered');
+
+                // Set canvas size (Moved up before positioning)
+                gameCanvas.width = window.innerWidth;
+                gameCanvas.height = window.innerHeight;
+                playerX = gameCanvas.width / 2;
+                playerY = gameCanvas.height - 50;
 
                 bullets = [];
                 enemies = [];
                 particles = [];
                 bossMissiles = [];
                 isMouseDown = false;
+
+                // Reset Memes
+                memeTimers = { alt23: 0, m5: 0, m6: 0, m1: 0 };
+                altMemeToggle = false;
+                bossMemeTriggered = false;
+                document.getElementById('memeLayerBehind').innerHTML = '';
+                document.getElementById('memeLayerAbove').innerHTML = '';
 
                 // Initialize Boss
                 boss.w = 200; boss.h = 200;
@@ -1148,13 +1442,7 @@
                 boss.phase = 1;
                 boss.laserState = 0;
 
-                // Set canvas size
-                gameCanvas.width = window.innerWidth;
-                gameCanvas.height = window.innerHeight;
-                playerX = gameCanvas.width / 2;
-
                 scoreDisplay.textContent = score;
-
                 requestAnimationFrame(gameLoop);
             }
 
@@ -1171,6 +1459,13 @@
             finishGameBtn.addEventListener('click', () => {
                 // Hard exit
                 gameRunning = false;
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
+                const bgMusic2 = document.getElementById('bgMusic2');
+                if (bgMusic2) {
+                    bgMusic2.pause();
+                    bgMusic2.currentTime = 0;
+                }
                 gameOverlay.style.display = 'none';
             });
 
@@ -1183,12 +1478,18 @@
             });
 
             document.addEventListener('keydown', (e) => {
-                if ((e.key === 'w' || e.key === 'W') && gameRunning && !bossActive) {
+                if ((e.key === 'z' || e.key === 'Z') && gameRunning && !bossActive) {
                     loadingProgress = 40; // Cheat: Instant Boss
                 }
             });
 
-            gameCanvas.addEventListener('mousemove', (e) => { if (!isPaused) playerX = e.clientX; });
+            gameCanvas.addEventListener('mousemove', (e) => {
+                if (!isPaused) {
+                    if (currentLevel === 1 || (currentLevel === 2 && level2Phase < 2)) {
+                        playerX = e.clientX;
+                    }
+                }
+            });
             gameCanvas.addEventListener('mousedown', (e) => {
                 isMouseDown = true;
                 if (!gameOver && gameRunning && !isPaused) {
@@ -1202,24 +1503,19 @@
                 if (isPaused) return;
 
                 // Main Ship Bullets (Upwards)
-                if (autoFireLevel === 2) {
-                    // Double Shot Logic
-                    bullets.push({ x: playerX - 15, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
-                    bullets.push({ x: playerX + 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
-                } else {
-                    // Single Shot
-                    bullets.push({ x: playerX - 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
+                if (currentLevel === 1 || (currentLevel === 2 && level2Phase < 2)) {
+                    if (autoFireLevel === 2) {
+                        // Double Shot Logic
+                        bullets.push({ x: playerX - 15, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
+                        bullets.push({ x: playerX + 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
+                    } else {
+                        // Single Shot
+                        bullets.push({ x: playerX - 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
+                    }
                 }
 
                 // Second Ship (Side Ship)
-                if (hasMirrorShip) {
-                    // Calculate Y position based on playerX (Map 0..Width to Height..0 inverted or similar?)
-                    // Let's map X (0 to Width) to Y (Height-50 to 50) linearly
-                    // But maybe user wants it to follow? "ne lent hanem a képernyő bal oldalán"
-                    // Let's say it moves up and down on the left side.
-                    // We'll use a saved variable or just calculate it on the fly in loop.
-                    // For spawning, we recalculate position to match draw logic.
-
+                if (hasMirrorShip && currentLevel === 1) {
                     let ratio = playerX / gameCanvas.width;
                     let sideY = (gameCanvas.height - 100) * ratio + 50;
 
@@ -1229,6 +1525,14 @@
                     } else {
                         bullets.push({ x: 40, y: sideY, width: 10, height: 10, vx: 10, vy: 0 });
                     }
+                } else if (currentLevel === 2 && level2Phase >= 2) {
+                    // Shoot towards mouse
+                    let dx = mouseX - playerX;
+                    let dy = mouseY - playerY;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    let vx = (dx / dist) * 48; // 300% faster (12 * (1 + 3))
+                    let vy = (dy / dist) * 48;
+                    bullets.push({ x: playerX, y: playerY, width: 10, height: 10, vx: vx, vy: vy });
                 }
             }
 
@@ -1254,20 +1558,84 @@
                     ctx.fillStyle = "#00ff00"; // Green
                     ctx.textAlign = "center";
                     ctx.fillText("NYERTÉL!", gameCanvas.width / 2, gameCanvas.height / 2 - 40);
+
+                    const btn = document.getElementById('level2Btn');
+                    btn.style.display = 'block';
+                    btn.classList.add('centered'); // Show in center on win
+
                     ctx.fillStyle = "white";
                     ctx.font = "30px 'Outfit', sans-serif";
                     ctx.fillText("KAPTÁL 1000 PÉNZT!", gameCanvas.width / 2, gameCanvas.height / 2 + 20);
 
-                    // Stop loop basically by not requesting frame, or just return
-                    // But we want to allow closing via Finish button
                     return;
                 }
 
                 if (!gameOver) {
                     gameElapsedTime += deltaTime;
 
+                    if (currentLevel === 2) {
+                        const bgMusic2 = document.getElementById('bgMusic2');
+                        let ct = bgMusic2.currentTime;
+
+                        // WASD Tutorial Logic
+                        const wasdImg = document.getElementById('wasdTutorial');
+                        if (ct >= 42 && wasdShowState === 0) {
+                            wasdShowState = 1;
+                            if (wasdImg) wasdImg.style.display = 'block';
+                        }
+
+                        if (wasdShowState === 1) {
+                            if (keysPressed['w'] || keysPressed['a'] || keysPressed['s'] || keysPressed['d']) {
+                                wasdShowState = 2;
+                                wasdHideTimer = 2000; // 2 seconds
+                            }
+                        } else if (wasdShowState === 2) {
+                            wasdHideTimer -= deltaTime;
+                            if (wasdHideTimer <= 0) {
+                                wasdShowState = 3;
+                                if (wasdImg) wasdImg.style.display = 'none';
+                            }
+                        }
+
+                        let oldPhase = level2Phase;
+                        if (ct >= 48) level2Phase = 3;
+                        else if (ct >= 43) level2Phase = 2;
+                        else level2Phase = 1;
+
+                        if (oldPhase === 1 && level2Phase === 2) {
+                            // Clear enemies on transition to WASD
+                            enemies.forEach(e => { if (e.dom) e.dom.remove(); });
+                            enemies = [];
+                        }
+
+                        if (level2Phase >= 2) {
+                            // Dash Cooldown
+                            if (dashCooldown > 0) dashCooldown -= deltaTime;
+                            if (dashTimer > 0) dashTimer -= deltaTime;
+
+                            // Dash Trigger
+                            if (keysPressed['shift'] && dashCooldown <= 0) {
+                                dashTimer = 150; // 150ms dash
+                                dashCooldown = 2000; // 2s cooldown
+                            }
+
+                            let speed = 8.5; // 70% faster (5 * 1.7)
+                            if (dashTimer > 0) speed *= 4; // Dash burst
+
+                            if (keysPressed['w']) playerY -= speed;
+                            if (keysPressed['s']) playerY += speed;
+                            if (keysPressed['a']) playerX -= speed;
+                            if (keysPressed['d']) playerX += speed;
+
+                            playerX = Math.max(20, Math.min(gameCanvas.width - 20, playerX));
+                            playerY = Math.max(20, Math.min(gameCanvas.height - 20, playerY));
+
+                            playerAngle = Math.atan2(mouseY - playerY, mouseX - playerX) + Math.PI / 2;
+                        }
+                    }
+
                     // Loading / Boss Timer
-                    if (!bossActive) {
+                    if (currentLevel === 1 && !bossActive) {
                         if (loadingProgress < 40) {
                             loadingProgress += deltaTime / 1000;
                         }
@@ -1298,7 +1666,7 @@
                 }
 
                 // Draw Player
-                drawSpaceship(playerX, gameCanvas.height - 50);
+                drawSpaceship(playerX, (currentLevel === 2 && level2Phase >= 2) ? playerY : (gameCanvas.height - 50));
 
                 // Draw Side Ship
                 if (hasMirrorShip) {
@@ -1313,7 +1681,7 @@
                 }
 
                 // Draw Loading Bar
-                if (!bossActive && !gameOver) {
+                if (currentLevel === 1 && !bossActive && !gameOver) {
                     let barW = 300;
                     let barH = 10;
                     let lx = (gameCanvas.width / 2) - (barW / 2);
@@ -1333,6 +1701,14 @@
                     ctx.font = "16px sans-serif";
                     ctx.textAlign = "center";
                     ctx.fillText(`BOSS BETÖLTÉS: ${Math.floor((loadingProgress / 40) * 100)}%`, gameCanvas.width / 2, ly - 10);
+                }
+
+                // Endless Message Level 2
+                if (currentLevel === 2 && gameElapsedTime > 30000) {
+                    ctx.font = "bold 30px 'Outfit', sans-serif";
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Ez endless amúgy szóval ennyi xd", gameCanvas.width / 2, 50);
                 }
 
                 if (!gameOver) {
@@ -1510,69 +1886,164 @@
                     }
 
                     // Spawning
-                    let spawnRate = bossActive ? 333 : 1500; // 3/s = 333ms
-                    if (!bossActive) {
+                    let spawnRate = bossActive ? 333 : 1500;
+                    if (currentLevel === 2) {
+                        spawnRate = level2Phase === 3 ? 200 : 333; // 5/s or 3/s
+                    } else if (!bossActive) {
                         if (gameElapsedTime > 5000) {
                             const progress = Math.min((gameElapsedTime - 5000) / 15000, 1);
                             spawnRate = 1500 - (1400 * progress);
                         }
-                    } else {
-                        spawnRate = 333; // Fixed 3 per sec if boss
                     }
 
                     enemySpawnTimer += deltaTime;
                     while (enemySpawnTimer > spawnRate) {
                         enemySpawnTimer -= spawnRate;
-                        enemies.push({ x: Math.random() * (gameCanvas.width - 40) + 20, y: -50, width: 40, height: 40, color: `hsl(${Math.random() * 360}, 100%, 50%)` });
+
+                        let ex, ey, isRainbow = false, isPiros = false;
+                        if (currentLevel === 2) {
+                            if (level2Phase === 3) {
+                                let side = Math.floor(Math.random() * 4);
+                                if (side === 0) { ex = Math.random() * gameCanvas.width; ey = -50; }
+                                else if (side === 1) { ex = Math.random() * gameCanvas.width; ey = gameCanvas.height + 50; }
+                                else if (side === 2) { ex = -50; ey = Math.random() * gameCanvas.height; }
+                                else { ex = gameCanvas.width + 50; ey = Math.random() * gameCanvas.height; }
+                                isRainbow = true;
+                            } else {
+                                ex = Math.random() * (gameCanvas.width - 40) + 20;
+                                ey = -50;
+                                isPiros = true;
+                            }
+                        } else {
+                            ex = Math.random() * (gameCanvas.width - 40) + 20;
+                            ey = -50;
+                        }
+
+                        let isFekete = currentLevel === 1 && Math.random() < 0.1;
+                        enemies.push({
+                            x: ex, y: ey,
+                            width: 40, height: 40,
+                            color: isFekete ? "transparent" : (isPiros ? "red" : `hsl(${Math.random() * 360}, 100%, 50%)`),
+                            isFekete: isFekete,
+                            isRainbow: isRainbow,
+                            isHoming: isRainbow
+                        });
+                    }
+
+                    // Meme Handling
+                    memeTimers.alt23 += deltaTime;
+                    memeTimers.m5 += deltaTime;
+                    memeTimers.m6 += deltaTime;
+                    memeTimers.m1 += deltaTime;
+
+                    if (memeTimers.alt23 > 20000) {
+                        memeTimers.alt23 = 0;
+                        altMemeToggle = !altMemeToggle;
+                        showMeme(altMemeToggle ? 'meme_2.gif' : 'meme_3.gif', 'memeLayerAbove', 5000, 'meme-full chroma-key-green');
+                    }
+                    if (memeTimers.m5 > 8000) {
+                        memeTimers.m5 = 0;
+                        showMeme('meme_5.gif', 'memeLayerAbove', 3000, 'meme-full chroma-key-green');
+                    }
+                    if (memeTimers.m6 > 10000) {
+                        memeTimers.m6 = 0;
+                        showMeme('meme_6.gif', 'memeLayerBehind', 4000, 'meme-full chroma-key-green');
+                    }
+                    if (memeTimers.m1 > 12000) {
+                        memeTimers.m1 = 0;
+                        showMeme('meme1.gif', 'memeLayerAbove', 3000, 'meme-side meme-left chroma-key-green');
+                        showMeme('meme1.gif', 'memeLayerAbove', 3000, 'meme-side meme-right chroma-key-green');
+                    }
+
+                    if (bossActive && !bossMemeTriggered) {
+                        showMeme('meme_end.gif', 'memeLayerAbove', 5000, 'meme-full chroma-key-green');
+                        bossMemeTriggered = true;
                     }
 
                     // Update Entities
                     for (let i = enemies.length - 1; i >= 0; i--) {
                         let e = enemies[i];
-                        e.y += (gameCanvas.height / 5000) * deltaTime;
-                        ctx.fillStyle = e.color;
-                        ctx.fillRect(e.x - 20, e.y - 20, e.width, e.height);
-                        if (e.y > gameCanvas.height) {
-                            takeDamage(1);
-                            enemies.splice(i, 1);
-                        } else if (rectIntersect(e.x - 20, e.y - 20, e.width, e.height, playerX - 20, gameCanvas.height - 50, 40, 40)) {
-                            takeDamage(1);
-                            enemies.splice(i, 1);
-                        }
-                    }
 
-                    // Collision
-                    for (let i = bullets.length - 1; i >= 0; i--) {
-                        for (let j = enemies.length - 1; j >= 0; j--) {
-                            let b = bullets[i]; let e = enemies[j];
-                            if (rectIntersect(b.x - 5, b.y, 10, 10, e.x - 20, e.y - 20, 40, 40)) {
-                                createExplosion(e.x, e.y, e.color);
-                                bullets.splice(i, 1); enemies.splice(j, 1);
-                                score++;
-                                scoreDisplay.textContent = score;
-                                break;
+                        if (e.isHoming) {
+                            let dx = playerX - e.x;
+                            let dy = playerY - e.y;
+                            let dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist > 0) {
+                                e.x += (dx / dist) * 3;
+                                e.y += (dy / dist) * 3;
                             }
+                        } else {
+                            e.y += (gameCanvas.height / 5000) * deltaTime;
+                        }
+
+                        if (e.isFekete) {
+                            if (!e.dom) {
+                                e.dom = document.createElement('img');
+                                e.dom.src = 'meme_fekete.gif';
+                                e.dom.className = 'meme-gif chroma-key-black';
+                                e.dom.style.width = e.width + 'px';
+                                e.dom.style.height = e.height + 'px';
+                                e.dom.style.display = 'block';
+                                document.getElementById('memeLayerAbove').appendChild(e.dom);
+                            }
+                            e.dom.style.left = (e.x - 20) + 'px';
+                            e.dom.style.top = (e.y - 20) + 'px';
+                        } else {
+                            ctx.fillStyle = e.isRainbow ? `hsl(${Date.now() % 360}, 100%, 50%)` : e.color;
+                            ctx.fillRect(e.x - 20, e.y - 20, e.width, e.height);
+                        }
+
+                        if (e.y > gameCanvas.height + 100 || e.y < -100 || e.x > gameCanvas.width + 100 || e.x < -100) {
+                            // Only take damage if it falls off bottom in Level 1. Level 2 specified only on contact.
+                            if (currentLevel === 1 && !e.isHoming && e.y > gameCanvas.height) takeDamage(1);
+                            if (e.dom) e.dom.remove();
+                            enemies.splice(i, 1);
+                        } else if (rectIntersect(e.x - 20, e.y - 20, e.width, e.height, playerX - 20, playerY - 20, 40, 40)) {
+                            takeDamage(1);
+                            if (e.dom) e.dom.remove();
+                            enemies.splice(i, 1);
                         }
                     }
+                }
 
-                    // Particles
-                    for (let i = particles.length - 1; i >= 0; i--) {
-                        let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= deltaTime;
-                        ctx.fillStyle = p.color; ctx.globalAlpha = p.life / 500; ctx.fillRect(p.x, p.y, 4, 4); ctx.globalAlpha = 1;
-                        if (p.life <= 0) particles.splice(i, 1);
+                // Collision
+                for (let i = bullets.length - 1; i >= 0; i--) {
+                    for (let j = enemies.length - 1; j >= 0; j--) {
+                        let b = bullets[i]; let e = enemies[j];
+                        if (rectIntersect(b.x - 5, b.y, 10, 10, e.x - 20, e.y - 20, 40, 40)) {
+                            createExplosion(e.x, e.y, e.isFekete ? "white" : e.color);
+                            if (e.dom) e.dom.remove();
+                            bullets.splice(i, 1); enemies.splice(j, 1);
+                            score++;
+                            scoreDisplay.textContent = score;
+                            break;
+                        }
                     }
+                }
+
+                // Particles
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= deltaTime;
+                    ctx.fillStyle = p.color; ctx.globalAlpha = p.life / 500; ctx.fillRect(p.x, p.y, 4, 4); ctx.globalAlpha = 1;
+                    if (p.life <= 0) particles.splice(i, 1);
                 }
 
                 requestAnimationFrame(gameLoop);
             }
 
             function drawSpaceship(x, y) {
+                ctx.save();
+                ctx.translate(x, y);
+                if (currentLevel === 2 && level2Phase >= 2) {
+                    ctx.rotate(playerAngle);
+                }
                 ctx.fillStyle = "#ffffff";
-                ctx.fillRect(x - 2, y - 20, 4, 10);
-                ctx.fillRect(x - 10, y - 10, 20, 10);
-                ctx.fillRect(x - 20, y, 40, 10);
-                ctx.fillStyle = "#00ccff";
-                ctx.fillRect(x - 5, y - 5, 10, 5);
+                ctx.fillRect(-2, -20, 4, 10);
+                ctx.fillRect(-10, -10, 20, 10);
+                ctx.fillRect(-20, 0, 40, 10);
+                ctx.fillStyle = "#00bcd4";
+                ctx.fillRect(-5, -5, 10, 10);
+                ctx.restore();
             }
 
             function createExplosion(x, y, color) {
@@ -1596,7 +2067,7 @@
                 if (gameOver) return;
                 playerHP -= amount;
                 updateHealthUI();
-                createExplosion(playerX, gameCanvas.height - 40, "red");
+                createExplosion(playerX, (currentLevel === 2 && level2Phase >= 2) ? playerY : (gameCanvas.height - 50), "red");
                 if (playerHP <= 0) {
                     triggerGameOver();
                 }
