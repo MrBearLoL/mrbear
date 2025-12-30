@@ -1049,17 +1049,27 @@
     </div>
 
     <!-- Sounds -->
-    <audio id="spinSound" src="spin.mp3" preload="auto"></audio>
-    <audio id="winSound" src="win.mp3" preload="auto"></audio>
-    <audio id="bgMusic" src="zene.mp3" preload="auto" loop></audio>
-    <audio id="bgMusic2" src="zene2.mp3" preload="auto"></audio>
+    <audio id="spinSound" src="./spin.mp3" preload="auto"></audio>
+    <audio id="winSound" src="./win.mp3" preload="auto"></audio>
+    <audio id="bgMusic" src="./zene.mp3" preload="auto" loop></audio>
+    <audio id="bgMusic2" src="./zene2.mp3" preload="auto"></audio>
 
     <script>
         // Global variables for audio and slot UI elements
         let bgMusic, bgMusic2, spinSound, winSound, volumeSlider;
         let scamOverlay, hekasOverlay, claimBtn, refuseBtn, virusContainer;
         let spinBtn, reelStrips, winOverlay;
-        let images = ['1.png', '2.gif', '3.png', '4.png'];
+        let images = ['./1.png', './2.gif', './3.png', './4.png'];
+
+        function initAudio() {
+            // Browsers often need a user gesture to resume the AudioContext or play.
+            if (bgMusic && bgMusic.paused && gameRunning) {
+                bgMusic.play().catch(() => { });
+            }
+            if (bgMusic2 && bgMusic2.paused && currentLevel === 2) {
+                bgMusic2.play().catch(() => { });
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize global variables
@@ -1081,6 +1091,11 @@
                 document.querySelector('#reel2 .reel-strip'),
                 document.querySelector('#reel3 .reel-strip')
             ];
+
+            // Add global click listener for audio "unlocking"
+            document.body.addEventListener('mousedown', initAudio, { once: true });
+            document.body.addEventListener('touchstart', initAudio, { once: true });
+            document.body.addEventListener('keydown', initAudio, { once: true });
 
             // Video autoplay logic
             const video = document.getElementById('radicsVideo');
@@ -1131,8 +1146,10 @@
 
                 isSpinning = true;
                 spinBtn.textContent = "SKIP";
-                spinSound.currentTime = 0;
-                spinSound.play().catch(e => console.log("Audio play failed", e));
+                try {
+                    if (spinSound) spinSound.currentTime = 0;
+                } catch (e) { }
+                if (spinSound) spinSound.play().catch(e => console.log("Audio play failed", e));
 
                 const results = [
                     Math.floor(Math.random() * numIcons),
@@ -1313,7 +1330,7 @@
                 if (!layer) return;
 
                 const img = document.createElement('img');
-                img.src = src;
+                img.src = './' + src; // Forces current directory relative path
                 img.className = 'meme-gif ' + className;
                 img.style.display = 'block';
                 layer.appendChild(img);
@@ -1397,8 +1414,10 @@
 
                 gameRunning = true;
                 isPaused = false;
-                bgMusic.currentTime = 0;
-                bgMusic.play().catch(e => console.log("Audio play failed", e));
+                try {
+                    if (bgMusic) bgMusic.currentTime = 0;
+                } catch (e) { }
+                if (bgMusic) bgMusic.play().catch(e => console.log("Audio play failed", e));
                 gameOver = false;
                 lastTime = performance.now();
                 gameElapsedTime = 0;
@@ -1994,7 +2013,7 @@
                         if (e.isFekete) {
                             if (!e.dom) {
                                 e.dom = document.createElement('img');
-                                e.dom.src = 'meme_fekete.gif';
+                                e.dom.src = './meme_fekete.gif';
                                 e.dom.className = 'meme-gif chroma-key-black';
                                 e.dom.style.width = e.width + 'px';
                                 e.dom.style.height = e.height + 'px';
