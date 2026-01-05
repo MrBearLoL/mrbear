@@ -1,5 +1,27 @@
 // script.js – 3D Minecraft skin viewer
+// Shared Money System
+const MoneyManager = {
+    get: function () {
+        return parseInt(localStorage.getItem('daboMoney') || '0');
+    },
+    set: function (amount) {
+        localStorage.setItem('daboMoney', amount.toString());
+        this.updateDisplay();
+    },
+    add: function (amount) {
+        this.set(this.get() + amount);
+    },
+    updateDisplay: function () {
+        const moneyDisplay = document.getElementById('money-amount');
+        if (moneyDisplay) {
+            moneyDisplay.textContent = this.get();
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize money display
+    MoneyManager.updateDisplay();
     // YouTube videó betöltése
     // FONTOS: Cseréld ki a 'VIDEO_ID_HERE' részt a legújabb Bear videó ID-jére!
     // Példa: ha a videó URL-je https://www.youtube.com/watch?v=dQw4w9WgXcQ

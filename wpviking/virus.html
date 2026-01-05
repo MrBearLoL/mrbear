@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SYSTEM CRITICAL</title>
+    <style>
+        body {
+            background-color: #000080;
+            /* Windows BSOD blue or classic desktop */
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* Stop scrolling to keep the 'trapped' feel */
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .popup {
+            position: absolute;
+            width: 280px;
+            z-index: 10;
+        }
+
+        /* Style 1: Classic Gray Windows */
+        .style-classic {
+            background-color: #c0c0c0;
+            border: 2px outset white;
+            box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .style-classic .popup-header {
+            background: linear-gradient(90deg, darkblue, blue);
+            color: white;
+            padding: 3px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .style-classic .popup-close {
+            background-color: #c0c0c0;
+            color: black;
+            border: 1px outset white;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 14px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+
+        .style-classic .popup-close:active {
+            border: 1px inset white;
+        }
+
+        /* Style 2: Terminal / Hacker */
+        .style-terminal {
+            background-color: black;
+            border: 2px solid lime;
+            color: lime;
+            font-family: 'Consolas', monospace;
+        }
+
+        .style-terminal .popup-header {
+            background: lime;
+            color: black;
+            padding: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .style-terminal .popup-close {
+            background: black;
+            color: lime;
+            border: 1px solid black;
+            cursor: pointer;
+            font-weight: bold;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 14px;
+            font-size: 12px;
+        }
+
+        .style-terminal .popup-close:active {
+            border: 1px inset lime;
+        }
+
+        /* Style 3: Warnings / Alert */
+        .style-alert {
+            background-color: #ffcccc;
+            border: 4px solid red;
+            color: red;
+            font-family: Arial, sans-serif;
+        }
+
+        .style-alert .popup-header {
+            background: red;
+            color: white;
+            padding: 5px;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .style-alert .popup-close {
+            background: white;
+            color: red;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 18px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .style-alert .popup-close:active {
+            background: #eee;
+        }
+
+        /* Style 4: Flashy Spam */
+        .style-flashy {
+            background-color: yellow;
+            border: 3px dashed magenta;
+        }
+
+        .style-flashy .popup-header {
+            background: magenta;
+            color: yellow;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            padding: 2px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .style-flashy .popup-close {
+            background: yellow;
+            color: magenta;
+            border: 1px solid magenta;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 14px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .style-flashy .popup-close:active {
+            border: 1px inset magenta;
+        }
+
+        .popup-content {
+            padding: 10px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .popup img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Specific styles for different types of chaotic elements */
+        .ad-banner {
+            border: 2px dashed lime;
+            background-color: black;
+        }
+
+        .ad-banner .popup-header {
+            background: red;
+        }
+
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.1;
+            background: repeating-linear-gradient(45deg, red, red 10px, yellow 10px, yellow 20px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="bg-overlay"></div>
+
+    <!-- Generált Popupok helye -->
+    <div id="popup-container"></div>
+
+    <script>
+        // Assetek (képek)
+        const images = [
+            'virus_alert_window.png',
+            'claim_prize_banner.png',
+            'sexy_single_ad.png',
+            'free_money_banner.png',
+            '../logo.png', // Az eredeti logo is spamként
+            '../201.gif'
+        ];
+
+        const texts = [
+            "VIRUS DETECTED!",
+            "UNABLE TO STOP PROCESS",
+            "YOUR COMPUTER IS INFECTED",
+            "DOWNLOAD RAM FREE",
+            "HOT SINGLES IN YOUR AREA",
+            "YOU ARE THE 1,000,000TH VISITOR",
+            "CLICK HERE TO CLAIM PRIZE",
+            "SYSTEM32 DELETED",
+            "ERROR 404: BRAIN NOT FOUND",
+            "SEND MONEY NOW",
+            "WIN IPHONE 75!!!",
+            "TAKE SURVEY NOW",
+            "DOWNLOAD ANTI-VIRUS",
+            "INSTALL TOOLBAR",
+            "FREE MP3 DOWNLOAD",
+            "CONGRATULATIONS!",
+            "YOUR IP IS PUBLIC",
+            "WEBCAM ACTIVATED",
+            "DATA CORRUPTION IMMINENT",
+            "ILLEGAL OPERATION",
+            "FATAL EXCEPTION 0E"
+        ];
+
+        const titles = [
+            "WARNING",
+            "CRITICAL ERROR",
+            "CONGRATS!",
+            "HELLO?",
+            "SYSTEM ALERT",
+            "WINNER",
+            "ADVERTISEMENT",
+            "SURVEY",
+            "DOWNLOAD",
+            "IMPORTANT",
+            "SECURITY",
+            "CMD.EXE",
+            "PRIZE NOTIFICATION"
+        ];
+
+        function createPopup(index) {
+            const div = document.createElement('div');
+
+            // Random style selection
+            const styles = ['style-classic', 'style-terminal', 'style-alert', 'style-flashy'];
+            const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+            div.className = 'popup ' + randomStyle;
+
+            // Mobilra optimalizált méretezés és pozicionálás
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            const popupWidth = Math.min(280, viewportWidth * 0.85);
+            div.style.width = popupWidth + 'px';
+
+            const minX = -40;
+            const maxX = viewportWidth - popupWidth + 40;
+            const minY = -20;
+            const maxY = viewportHeight - 150;
+
+            const rX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+            const rY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+            div.style.left = rX + 'px';
+            div.style.top = rY + 'px';
+            div.style.zIndex = 100 + index;
+
+            // Content Logic
+            let contentHtml = '';
+            // 40% chance of image, 60% chance of text for variety
+            if (Math.random() > 0.6) {
+                const img = images[Math.floor(Math.random() * images.length)];
+                contentHtml = `<img src="${img}" alt="spam">`;
+            } else {
+                const txt = texts[Math.floor(Math.random() * texts.length)];
+                // Font size tweak
+                const fontSize = Math.floor(Math.random() * 10) + 16;
+                contentHtml = `<div style="font-size: ${fontSize}px; font-weight: bold;">${txt}</div><br><button style="cursor:pointer; padding: 5px;">${Math.random() > 0.5 ? 'OK' : 'CANCEL'}</button>`;
+            }
+
+            const title = titles[Math.floor(Math.random() * titles.length)];
+
+            div.innerHTML = `
+            <div class="popup-header">
+                <span>${title}</span>
+                <div class="popup-close" onclick="this.parentElement.parentElement.remove()">X</div>
+            </div>
+            <div class="popup-content">
+                ${contentHtml}
+            </div>
+        `;
+
+            document.getElementById('popup-container').appendChild(div);
+        }
+
+        // Inicializálás: Még több popup!
+        function initChaos() {
+            const popupCount = 40; // Ez már szép mennyiség
+            for (let i = 0; i < popupCount; i++) {
+                createPopup(i);
+            }
+        }
+
+        window.onload = initChaos;
+
+        // Ha mindet bezárta... (opcionális easter egg)
+        const observer = new MutationObserver(function (mutations) {
+            if (document.getElementById('popup-container').children.length === 0) {
+                alert("VIRUS REMOVED... OR IS IT?");
+                location.reload(); // Újrakezdi :D
+            }
+        });
+
+        observer.observe(document.getElementById('popup-container'), { childList: true });
+
+    </script>
+
+</body>
+
+</html>

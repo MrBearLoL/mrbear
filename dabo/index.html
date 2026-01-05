@@ -101,9 +101,7 @@
 
         /* Game UI Styles */
         .game-score {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            position: static;
             font-size: 2rem;
             color: #ffd700;
             font-weight: bold;
@@ -125,6 +123,9 @@
             z-index: 5000;
             display: none;
             min-width: 300px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .menu-overlay h1 {
@@ -197,9 +198,9 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            /* Prevent scrolling */
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
             font-family: 'Outfit', sans-serif;
         }
 
@@ -283,7 +284,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 300px;
-            z-index: 5001;
+            z-index: 2;
             display: none;
             opacity: 0.9;
             pointer-events: none;
@@ -364,12 +365,14 @@
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
+            background-attachment: fixed;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            /* Center vertically */
-            height: 100vh;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 20px 0;
+            box-sizing: border-box;
         }
 
         .content-wrapper {
@@ -377,13 +380,11 @@
             flex-direction: column;
             align-items: center;
             gap: 2rem;
-            /* Increased gap */
             z-index: 10;
             width: 95%;
             max-width: 1600px;
-            /* Wider max-width */
-            height: 95vh;
-            justify-content: center;
+            min-height: 90vh;
+            justify-content: flex-start;
         }
 
         .message {
@@ -407,61 +408,95 @@
         }
 
         .main-content {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 3rem;
-            width: 100%;
-            flex: 1;
-            min-height: 0;
+            width: 95%;
+            max-width: 1500px;
+            align-items: start;
+            margin: 0 auto;
         }
 
         /* Video Styles */
         .video-container {
-            flex: 0 1 auto;
+            width: 100%;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 65%;
-            /* Allow it to take more width */
+            justify-content: flex-end;
+            align-items: flex-start;
         }
 
         video {
-            max-height: 65vh;
-            /* Larger video */
-            max-width: 100%;
+            display: block;
             width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 75vh;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border: 2px solid rgba(255, 255, 255, 0.2);
-            display: block;
         }
 
         /* Slot Machine Styles */
         .slot-machine-container {
-            flex: 0 0 auto;
+            transform: scale(1);
+            width: 100%;
+            box-sizing: border-box;
             background: rgba(0, 0, 0, 0.8);
-            padding: 1.5rem;
+            padding: 1rem;
             border-radius: 20px;
             border: 4px solid #ffd700;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
-            transform: scale(1);
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .global-money-display {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            white-space: nowrap;
+            text-shadow: 2px 2px 0 #000;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            z-index: 100;
+            position: absolute;
+            left: calc(100% + 20px);
+            top: 0;
+        }
+
+        .desktop-only {
+            display: block;
+        }
+
+        .dabonium-mobile-container {
+            display: none;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
             width: 100%;
             box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
         }
 
         .interaction-column {
+            width: 400px;
+            justify-self: start;
             display: flex;
             flex-direction: column;
             gap: 2rem;
             align-items: center;
-            flex: 0 0 auto;
-            min-width: 350px;
         }
 
         .dabo-wars-container {
@@ -470,6 +505,20 @@
             border-radius: 20px;
             border: 4px solid #00bcd4;
             box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .dabo-man-container {
+            background: rgba(0, 0, 0, 0.86);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 4px solid #ff5722;
+            box-shadow: 0 0 20px rgba(255, 87, 34, 0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -493,8 +542,11 @@
             color: #ffd700;
             text-transform: uppercase;
             text-shadow: 0 2px 0 #b8860b;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0px;
+            /* Removed margin */
             text-align: center;
+            line-height: 1;
+            /* Tighter line height */
         }
 
         .slot-window {
@@ -782,33 +834,75 @@
             }
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
             .main-content {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+                justify-items: center;
+                gap: 2rem;
             }
 
             .video-container {
-                width: 100%;
-                max-width: 100%;
+                justify-content: center;
             }
 
             video {
-                max-height: 30vh;
+                max-height: 50vh;
+                width: 100%;
+                max-width: 600px;
+            }
+
+            .global-money-display {
+                position: static;
+                width: 100%;
+                margin: 0 0 1rem 0;
+                text-align: center;
             }
 
             .slot-machine-container,
-            .dabo-wars-container {
-                transform: scale(0.9);
+            .dabo-wars-container,
+            .dabo-man-container {
+                transform: scale(1);
+                width: 100%;
+                max-width: 450px;
             }
 
             .interaction-column {
                 min-width: auto;
-                width: 90%;
+                width: 100%;
+                max-width: 100%;
+                gap: 1.5rem;
+                flex: 1 1 auto;
+            }
+
+            .global-money-display {
+                position: static;
+                width: 100%;
+                margin-bottom: 0.5rem;
+                text-align: center;
+                box-sizing: border-box;
             }
 
             .message {
-                font-size: 3rem;
+                font-size: 2.5rem;
                 margin-top: 1rem;
+            }
+
+            .desktop-only {
+                display: none;
+            }
+
+            .dabonium-mobile-container {
+                display: block;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .message {
+                font-size: 2.5rem;
+            }
+
+            .content-wrapper {
+                gap: 1rem;
             }
         }
 
@@ -944,6 +1038,169 @@
             display: block;
             margin: 0 auto;
         }
+
+        /* Game UI & Level Buttons */
+        .top-right-gui {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 20px;
+            z-index: 4002;
+        }
+
+        .game-buttons {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .game-score {
+            font-size: 1.8rem;
+            color: #ffd700;
+            font-weight: 800;
+            text-shadow: 2px 2px 0 #000;
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            white-space: nowrap;
+        }
+
+        .level-btn {
+            background: linear-gradient(to bottom, #00bcd4, #0097a7);
+            border: none;
+            padding: 0.6rem 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 #006064;
+            transition: all 0.1s;
+        }
+
+        @media (max-width: 600px) {
+            .top-right-gui {
+                top: 10px;
+                right: 10px;
+                gap: 5px;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .game-score {
+                font-size: 1.5rem;
+            }
+
+            .level-btn,
+            .ingame-shop-btn,
+            .finish-btn {
+                padding: 5px 10px;
+                font-size: 0.9rem;
+            }
+
+            .game-buttons {
+                gap: 5px;
+            }
+        }
+
+        /* Reset Button */
+        .reset-btn {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(220, 53, 69, 0.6);
+            color: white;
+            border: 1px solid #dc3545;
+            padding: 5px 10px;
+            font-size: 0.7rem;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .reset-btn:hover {
+            background: rgba(220, 53, 69, 1);
+        }
+
+        @media screen and (max-width: 900px) {
+            .reset-btn {
+                position: static;
+                margin: 20px auto;
+                display: block;
+                width: 100px;
+                text-align: center;
+            }
+        }
+
+        /* Entry Overlay */
+        #entryOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        #entryOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .entry-title {
+            font-size: 4rem;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 2rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .entry-ok-btn {
+            background: linear-gradient(to bottom, #ffd700, #b8860b);
+            border: none;
+            padding: 1.5rem 4rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #4a3c00;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 6px 0 #8b6508;
+            transition: all 0.1s;
+        }
+
+        .entry-ok-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #8b6508;
+        }
+
+        @media (max-width: 768px) {
+            .entry-title {
+                font-size: 2.5rem;
+                padding: 0 1rem;
+            }
+        }
     </style>
 </head>
 
@@ -962,6 +1219,11 @@
             </feComponentTransfer>
         </filter>
     </svg>
+    <div id="entryOverlay">
+        <div class="entry-title">EZT SZÁMÍTÓN NÉZD!</div>
+        <button class="entry-ok-btn" onclick="closeEntryOverlay()">OK</button>
+    </div>
+
     <div class="content-wrapper">
         <div class="message">
             Boldog újévet!
@@ -979,9 +1241,20 @@
 
             <!-- Interaction Column (Slot + Game) -->
             <div class="interaction-column">
+                <!-- Mobile Dabonium Display -->
+                <div class="dabonium-mobile-container">
+                    Dabonium: <span id="globalMoneyValueMobile">0</span>
+                </div>
+
                 <!-- Slot Machine Section -->
                 <div class="slot-machine-container">
-                    <div class="slot-title">SZERENCSEJÁTÉK!!!!!!!!</div>
+                    <div class="slot-title" style="margin-bottom: 0; line-height: 1;">SZERENCSEJÁTÉK!!!!!!!!</div>
+                    <div
+                        style="font-size: 1rem; color: #fff; margin-bottom: 0px; text-shadow: 1px 1px 0 #000; font-weight: bold; line-height: 1.2;">
+                        Nyeremény: 100 Dabonium</div>
+                    <div
+                        style="font-size: 0.7rem; color: #ccc; margin-bottom: 5px; text-shadow: 1px 1px 0 #000; line-height: 1.2;">
+                        és 1.000.000 robux</div>
                     <div class="slot-window">
                         <div class="reel" id="reel1">
                             <div class="reel-strip"></div>
@@ -994,12 +1267,20 @@
                         </div>
                     </div>
                     <button class="spin-btn" id="spinBtn">SPIN</button>
+                    <div class="global-money-display desktop-only">Dabonium: <span id="globalMoneyValue">0</span></div>
                 </div>
 
                 <!-- Dabo Wars 2 Section -->
                 <div class="dabo-wars-container">
                     <div class="game-title">Dabo Wars 2</div>
                     <button class="start-game-btn" id="startGameBtn">START</button>
+                </div>
+
+                <!-- Dabo-Man 67 Section -->
+                <div class="dabo-man-container">
+                    <div class="game-title" style="color: #ff5722; text-shadow: 0 2px 0 #bf360c;">Dabo-Man 67</div>
+                    <button class="start-game-btn" onclick="startPacmanGame()"
+                        style="background: #ff5722; box-shadow: 0 4px 0 #bf360c;">START</button>
                 </div>
             </div>
         </div>
@@ -1053,8 +1334,19 @@
         <canvas id="gameCanvas"></canvas>
         <img id="wasdTutorial" src="./wasd.png" class="wasd-tutorial" alt="WASD Control Tutorial"
             onerror="console.error('WASD tutorial load failed')">
-        <div class="game-score">Pénz: <span id="scoreDisplay" style="cursor: pointer; text-decoration: underline;"
-                onclick="cheatScore()" title="Kattints a csaláshoz!">0</span></div>
+        <div class="top-right-gui">
+            <div class="game-buttons">
+                <button class="level-btn" id="level1SelectBtn" onclick="startGame()">1.</button>
+                <button class="level-btn" id="level2SelectBtn" onclick="startLevel2()"
+                    style="display: none;">2.</button>
+                <button class="ingame-shop-btn" id="ingameShopBtn" onclick="openShopIngame()">BOLT</button>
+                <button class="finish-btn" id="finishGameBtn">BEFEJEZÉS</button>
+            </div>
+            <div class="game-score">
+                Dabonium: <span id="scoreDisplay" style="cursor: pointer; text-decoration: underline;"
+                    onclick="cheatScore()" title="Kattints a csaláshoz!">0</span>
+            </div>
+        </div>
 
         <div class="health-display">
             Élet:
@@ -1068,10 +1360,15 @@
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.4">
         </div>
 
-        <div class="game-ui">
-            <button class="level2-btn" id="level2Btn" onclick="startLevel2()">MÁSODIK PÁLYA</button>
-            <button class="ingame-shop-btn" id="ingameShopBtn" onclick="openShopIngame()">BOLT</button>
-            <button class="finish-btn" id="finishGameBtn">BEFEJEZÉS</button>
+
+
+        <!-- Level Win Menu -->
+        <div id="levelWinMenu" class="menu-overlay">
+            <h1 id="winStatusText">PÁLYA TELJESÍTVE</h1>
+            <p id="winRewardText">KAPTÁL 1000 DABONIUMOT!</p>
+            <button class="menu-btn next" id="nextLevelBtn">Következő Pálya</button>
+            <button class="menu-btn shop" id="winShopBtn">Bolt</button>
+            <button class="menu-btn exit" id="winExitBtn">Kilépés</button>
         </div>
 
         <!-- Post Game Menu -->
@@ -1085,16 +1382,16 @@
         <!-- Shop Menu -->
         <div id="shopMenu" class="menu-overlay">
             <h1>Bolt</h1>
-            <p>Pénz: <span id="shopMoneyDisplay" style="cursor: pointer; text-decoration: underline;"
+            <p>Dabonium: <span id="shopMoneyDisplay" style="cursor: pointer; text-decoration: underline;"
                     onclick="cheatScore()">0</span></p>
             <div class="shop-item">
-                <button id="upg1Btn" onclick="buyUpgrade(1)">10 Pont - Automáta (14/mp)</button>
+                <button id="upg1Btn" onclick="buyUpgrade(1)">50 Dabonium - Automáta (14/mp)</button>
             </div>
             <div class="shop-item">
-                <button id="upg2Btn" onclick="buyUpgrade(2)">30 Pont - Gyorstüzelés (20/mp + Dupla)</button>
+                <button id="upg2Btn" onclick="buyUpgrade(2)">70 Dabonium - Gyorstüzelés (20/mp + Dupla)</button>
             </div>
             <div class="shop-item">
-                <button id="upg3Btn" onclick="buyUpgrade(3)">50 Pont - Tükörhajó</button>
+                <button id="upg3Btn" onclick="buyUpgrade(3)">150 Dabonium - Tükörhajó</button>
             </div>
             <button class="menu-btn back" onclick="closeShop()">Vissza</button>
         </div>
@@ -1118,19 +1415,28 @@
         onerror="console.warn('spin.mp3 missing - sound disabled')"></audio>
     <audio id="winSound" src="./win.mp3" preload="auto"
         onerror="console.warn('win.mp3 missing - sound disabled')"></audio>
+    <audio id="btnSound" src="./button_sound1.ogg" preload="auto"
+        onerror="console.warn('button_sound1.ogg missing - sound disabled')"></audio>
 
     <link rel="preload" as="image" href="./meme_fekete.gif">
 
     <script>
+        function closeEntryOverlay() {
+            const overlay = document.getElementById('entryOverlay');
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+        }
+
         // Redirect to add trailing slash if missing (fixes relative paths on GitHub Pages)
         if (window.location.pathname.endsWith('/dabo')) {
             window.location.replace(window.location.href + '/');
         }
 
         // Global variables for audio and slot UI elements
-        let bgMusic, bgMusic2, spinSound, winSound, volumeSlider;
+        let bgMusic, bgMusic2, spinSound, winSound, btnSound, volumeSlider;
         let scamOverlay, hekasOverlay, claimBtn, refuseBtn, virusContainer;
-        let spinBtn, reelStrips, winOverlay;
+        let spinBtn, reelStrips, winOverlay, globalMoneyValue;
         let images = ['./1.png', './2.gif', './3.png', './4.png'];
 
         // Game state variables moved to global scope
@@ -1141,8 +1447,32 @@
         let score = 0;
         let autoFireLevel = 0;
         let hasMirrorShip = false;
+        let isLoopRunning = false;
+        let unlockedLevel2 = false;
+
+        function saveGameState() {
+            localStorage.setItem('daboMoney', score.toString());
+            localStorage.setItem('daboAutoFire', autoFireLevel.toString());
+            localStorage.setItem('daboMirrorShip', hasMirrorShip.toString());
+            localStorage.setItem('daboUnlockedLevel2', unlockedLevel2.toString());
+        }
 
         function initAudio() {
+            // Initial load of state from localStorage
+            const savedScore = localStorage.getItem('daboMoney');
+            if (savedScore !== null) score = parseInt(savedScore);
+
+            const savedAutoFire = localStorage.getItem('daboAutoFire');
+            if (savedAutoFire !== null) autoFireLevel = parseInt(savedAutoFire);
+
+            const savedMirror = localStorage.getItem('daboMirrorShip');
+            if (savedMirror !== null) hasMirrorShip = (savedMirror === 'true');
+
+            const savedLevel2 = localStorage.getItem('daboUnlockedLevel2');
+            if (savedLevel2 !== null) unlockedLevel2 = (savedLevel2 === 'true');
+
+            updateShopUI();
+
             // Browsers often need a user gesture to resume the AudioContext or play.
             if (bgMusic && bgMusic.paused && gameRunning) {
                 bgMusic.play().catch(() => { });
@@ -1158,6 +1488,7 @@
             bgMusic2 = document.getElementById('bgMusic2');
             spinSound = document.getElementById('spinSound');
             winSound = document.getElementById('winSound');
+            btnSound = document.getElementById('btnSound');
             volumeSlider = document.getElementById('volumeSlider');
             scamOverlay = document.getElementById('scamOverlay');
             hekasOverlay = document.getElementById('hekasOverlay');
@@ -1172,11 +1503,52 @@
                 document.querySelector('#reel2 .reel-strip'),
                 document.querySelector('#reel3 .reel-strip')
             ];
+            globalMoneyValue = document.getElementById('globalMoneyValue');
+            const globalMoneyValueMobile = document.getElementById('globalMoneyValueMobile');
+
+            // Sync function for both displays
+            const updateGlobalMoney = (val) => {
+                if (globalMoneyValue) globalMoneyValue.textContent = val;
+                if (globalMoneyValueMobile) globalMoneyValueMobile.textContent = val;
+                saveGameState();
+            };
+
+            // Load initial state
+            const savedScore = localStorage.getItem('daboMoney');
+            if (savedScore !== null) score = parseInt(savedScore);
+
+            const savedAutoFire = localStorage.getItem('daboAutoFire');
+            if (savedAutoFire !== null) autoFireLevel = parseInt(savedAutoFire);
+
+            const savedMirror = localStorage.getItem('daboMirrorShip');
+            if (savedMirror !== null) hasMirrorShip = (savedMirror === 'true');
+
+            const savedLevel2 = localStorage.getItem('daboUnlockedLevel2');
+            if (savedLevel2 !== null) unlockedLevel2 = (savedLevel2 === 'true');
+
+            updateGlobalMoney(score);
 
             // Add global click listener for audio "unlocking"
             document.body.addEventListener('mousedown', initAudio, { once: true });
             document.body.addEventListener('touchstart', initAudio, { once: true });
             document.body.addEventListener('keydown', initAudio, { once: true });
+
+            // Global Button Sound Listener
+            document.body.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                    // Check if inside virus container (heuristic: virus window usually has specific class, 
+                    // or we check if the button is the 'X' button inside a virus div)
+                    // The virus creation logic creates divs with class 'virus-window' and close buttons inside header.
+                    if (e.target.closest('.virus-window')) {
+                        return; // Skip sound for virus close
+                    }
+
+                    if (btnSound) {
+                        btnSound.currentTime = 0;
+                        btnSound.play().catch(err => console.log('Btn sound play failed', err));
+                    }
+                }
+            });
 
             // Video autoplay logic
             const video = document.getElementById('radicsVideo');
@@ -1367,11 +1739,14 @@
                 wasdShowState = 0;
                 dashCooldown = 0;
                 dashTimer = 0;
+                mirrorGlideMode = false; // Reset glide state
+                mirrorX = 40; mirrorY = 50; // Reset position
                 bullets = [];
                 enemies = [];
                 particles = [];
                 bossMissiles = [];
-                hasMirrorShip = false; // Törlődjön a második pályán
+                bossMissiles = [];
+                // hasMirrorShip = false; // Removed to persist if bought
 
                 bgMusic.pause();
                 bgMusic.currentTime = 0;
@@ -1379,18 +1754,43 @@
                 bgMusic2.play().catch(e => console.log("Audio play failed", e));
                 document.getElementById('memeLayerEnemies').innerHTML = '';
 
+                // Level 2 Background defaults to black/transparent initially
+                const bg = document.getElementById('gameBackground');
+                if (bg) {
+                    bg.style.backgroundImage = "none";
+                    bg.style.backgroundColor = "rgba(0, 0, 0, 0.85)"; // Matches overlay
+                }
+
                 gameCanvas.width = window.innerWidth;
                 gameCanvas.height = window.innerHeight;
                 playerX = gameCanvas.width / 2;
                 playerY = gameCanvas.height - 50;
 
-                const btn = document.getElementById('level2Btn');
-                btn.style.display = 'block';
-                btn.classList.remove('centered');
+                if (!unlockedLevel2) {
+                    unlockedLevel2 = true;
+                    saveGameState();
+                }
+                updateLevelButtons();
+
+                const btn2 = document.getElementById('level2SelectBtn');
+                if (btn2) btn2.classList.add('active-level');
+                const btn1 = document.getElementById('level1SelectBtn');
+                if (btn1) btn1.classList.remove('active-level');
+
                 gameOverlay.style.display = 'block';
                 postGameMenu.style.display = 'none';
-                requestAnimationFrame(gameLoop);
+                if (!isLoopRunning) {
+                    isLoopRunning = true;
+                    requestAnimationFrame(gameLoop);
+                }
             };
+
+            function updateLevelButtons() {
+                const btn2 = document.getElementById('level2SelectBtn');
+                if (btn2) {
+                    btn2.style.display = unlockedLevel2 ? 'block' : 'none';
+                }
+            }
 
             // Boss State
             let loadingProgress = 0; // 0 to 40
@@ -1407,9 +1807,12 @@
             };
 
             // Meme System State
-            let memeTimers = { alt23: 0, m5: 0, m6: 0, m1: 0, m4: 0, m7: 0 };
-            let altMemeToggle = false;
+            let memeRandomTimer = 0;
+            const memeFiles = ['meme_2.gif', 'meme_3.gif', 'meme_5.gif', 'meme_6.gif', 'meme1.gif', 'meme_4.gif', 'meme_7.gif'];
             let bossMemeTriggered = false;
+            let screenShake = 0;
+            let cameraSwayX = 0;
+            let cameraSwayY = 0;
 
             // Preload boss image
             const bossImg = new Image();
@@ -1438,18 +1841,36 @@
             // hasMirrorShip = false; (Already declared globally)
             let isMouseDown = false;
             let lastShotTime = 0;
+            // Mirror Ship State for Level 2
+            let mirrorX = 40;
+            let mirrorY = 0;
+            let mirrorAngle = 0; // Rotation for mirror ship
+            let mirrorShotTimer = 0;
+            let mirrorGlideMode = false; // triggered when WASD starts
+            // unlockedLevel2 = false; // Moved to global scope
 
             // Global access for HTML onclicks
             window.buyUpgrade = function (type) {
                 if (type === 1) {
-                    if (score >= 10) { score -= 10; autoFireLevel = 1; }
+                    if (score >= 50) { score -= 50; autoFireLevel = 1; }
                 } else if (type === 2) {
-                    if (score >= 30) { score -= 30; autoFireLevel = 2; }
+                    if (score >= 70) { score -= 70; autoFireLevel = 2; }
                 } else if (type === 3) {
-                    if (score >= 50) { score -= 50; hasMirrorShip = true; }
+                    if (score >= 150) { score -= 150; hasMirrorShip = true; }
                 }
+                saveGameState();
                 updateShopUI();
             };
+
+            window.resetData = function () {
+                if (confirm("BIZTOSAN TÖRÖLNI AKAROD AZ ÖSSZES ADATODAT? (Dabonium, Upgradék, Feloldott pályák)")) {
+                    localStorage.removeItem('daboMoney');
+                    localStorage.removeItem('daboAutoFire');
+                    localStorage.removeItem('daboMirrorShip');
+                    localStorage.removeItem('daboUnlockedLevel2');
+                    location.reload();
+                }
+            }
 
             window.closeShop = function () {
                 shopMenu.style.display = 'none';
@@ -1471,11 +1892,12 @@
             }
 
             window.cheatScore = function () {
-                let newScore = prompt("Mennyi pénzt szeretnél?", score);
+                let newScore = prompt("Mennyi Daboniumot szeretnél?", score);
                 if (newScore !== null) {
                     let parsed = parseInt(newScore);
                     if (!isNaN(parsed)) {
                         score = parsed;
+                        saveGameState();
                         updateShopUI(); // Updates displays
                     }
                 }
@@ -1484,15 +1906,17 @@
             function updateShopUI() {
                 shopMoneyDisplay.textContent = score;
                 scoreDisplay.textContent = score; // Sync main display
+                updateGlobalMoney(score); // Use the sync function
+                updateLevelButtons(); // NEW: sync level button visibility
 
-                document.getElementById('upg1Btn').disabled = (score < 10 || autoFireLevel >= 1);
-                document.getElementById('upg1Btn').innerText = autoFireLevel >= 1 ? "MEGVÉVE" : "10 Pont - Automáta (14/mp)";
+                document.getElementById('upg1Btn').disabled = (score < 50 || autoFireLevel >= 1);
+                document.getElementById('upg1Btn').innerText = autoFireLevel >= 1 ? "MEGVÉVE" : "50 Dabonium - Automáta (14/mp)";
 
-                document.getElementById('upg2Btn').disabled = (score < 30 || autoFireLevel >= 2);
-                document.getElementById('upg2Btn').innerText = autoFireLevel >= 2 ? "MEGVÉVE" : "30 Pont - Gyorstüzelés (20/mp + Dupla)";
+                document.getElementById('upg2Btn').disabled = (score < 70 || autoFireLevel >= 2);
+                document.getElementById('upg2Btn').innerText = autoFireLevel >= 2 ? "MEGVÉVE" : "70 Dabonium - Gyorstüzelés (20/mp + Dupla)";
 
-                document.getElementById('upg3Btn').disabled = (score < 50 || hasMirrorShip);
-                document.getElementById('upg3Btn').innerText = hasMirrorShip ? "MEGVÉVE" : "50 Pont - Tükörhajó";
+                document.getElementById('upg3Btn').disabled = (score < 150 || hasMirrorShip);
+                document.getElementById('upg3Btn').innerText = hasMirrorShip ? "MEGVÉVE" : "150 Dabonium - Tükörhajó";
             }
 
             startGameBtn.addEventListener('click', () => {
@@ -1503,15 +1927,15 @@
                 gameOverlay.style.display = 'block';
                 postGameMenu.style.display = 'none';
                 shopMenu.style.display = 'none';
+                const winUI = document.getElementById('levelWinMenu');
+                if (winUI) winUI.style.display = 'none';
 
                 gameRunning = true;
                 isPaused = false;
+                gameWon = false;
                 try {
-                    if (bgMusic) bgMusic.currentTime = 0;
-                    if (bgMusic2) {
-                        bgMusic2.pause();
-                        bgMusic2.currentTime = 0;
-                    }
+                    if (bgMusic) { bgMusic.pause(); bgMusic.currentTime = 0; }
+                    if (bgMusic2) { bgMusic2.pause(); bgMusic2.currentTime = 0; }
                 } catch (e) { }
                 if (bgMusic) bgMusic.play().catch(e => console.log("Audio play failed", e));
                 gameOver = false;
@@ -1519,6 +1943,34 @@
                 gameElapsedTime = 0;
                 loadingProgress = 0;
                 bossActive = false;
+                screenShake = 0;
+
+                // Reset Entities
+                bullets = [];
+                enemies = [];
+                particles = [];
+                bossMissiles = [];
+                isMouseDown = false;
+                const enemyLayer = document.getElementById('memeLayerEnemies');
+                if (enemyLayer) enemyLayer.innerHTML = '';
+
+                // Reset Memes
+                memeRandomTimer = 0;
+                bossMemeTriggered = false;
+                const mBehind = document.getElementById('memeLayerBehind');
+                if (mBehind) mBehind.innerHTML = '';
+                const mAbove = document.getElementById('memeLayerAbove');
+                if (mAbove) mAbove.innerHTML = '';
+
+                // Set Level 1 Background
+                const bg = document.getElementById('gameBackground');
+                if (bg) {
+                    bg.style.backgroundImage = "url('./hatter.jpg')";
+                    bg.style.backgroundSize = "cover";
+                    bg.style.backgroundPosition = "center";
+                    bg.style.backgroundColor = "transparent";
+                    bg.style.transform = "none";
+                }
 
                 // Level 1 Reset
                 currentLevel = 1;
@@ -1532,8 +1984,11 @@
                 const wasdImg = document.getElementById('wasdTutorial');
                 if (wasdImg) wasdImg.style.display = 'none';
 
-                const btn = document.getElementById('level2Btn');
-                if (btn) btn.classList.remove('centered');
+                updateLevelButtons();
+                const btn1 = document.getElementById('level1SelectBtn');
+                if (btn1) btn1.classList.add('active-level');
+                const btn2 = document.getElementById('level2SelectBtn');
+                if (btn2) btn2.classList.remove('active-level');
 
                 // Set canvas size (Moved up before positioning)
                 gameCanvas.width = window.innerWidth;
@@ -1541,30 +1996,10 @@
                 playerX = gameCanvas.width / 2;
                 playerY = gameCanvas.height - 50;
 
-                bullets = [];
-                enemies = [];
-                particles = [];
-                bossMissiles = [];
-                isMouseDown = false;
-
-                // Reset Memes
-                memeTimers = { alt23: 0, m5: 0, m6: 0, m1: 0, m4: 0, m7: 0 };
-                altMemeToggle = false;
-                bossMemeTriggered = false;
-                document.getElementById('memeLayerBehind').innerHTML = '';
-                document.getElementById('memeLayerAbove').innerHTML = '';
-                document.getElementById('memeLayerEnemies').innerHTML = '';
-
-                // Initialize Boss
-                boss.w = 200; boss.h = 200;
-                boss.x = window.innerWidth / 2 - 100;
-                boss.y = -250;
-                boss.hp = 200;
-                boss.phase = 1;
-                boss.laserState = 0;
-
-                scoreDisplay.textContent = score;
-                requestAnimationFrame(gameLoop);
+                if (!isLoopRunning) {
+                    isLoopRunning = true;
+                    requestAnimationFrame(gameLoop);
+                }
             }
 
             function updateHealthUI() {
@@ -1590,7 +2025,13 @@
                 gameOverlay.style.display = 'none';
             });
 
-            restartBtn.addEventListener('click', startGame);
+            restartBtn.addEventListener('click', () => {
+                if (currentLevel === 2) {
+                    startLevel2();
+                } else {
+                    startGame();
+                }
+            });
 
             shopBtn.addEventListener('click', () => {
                 postGameMenu.style.display = 'none';
@@ -1623,20 +2064,34 @@
             function spawnBullet() {
                 if (isPaused) return;
 
-                // Main Ship Bullets (Upwards)
+                // Main Ship Bullets (Upwards) - Level 1 ONLY or Level 2 Phase 1 (Standard)
                 if (currentLevel === 1 || (currentLevel === 2 && level2Phase < 2)) {
                     if (autoFireLevel === 2) {
-                        // Double Shot Logic
                         bullets.push({ x: playerX - 15, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
                         bullets.push({ x: playerX + 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
                     } else {
-                        // Single Shot
                         bullets.push({ x: playerX - 5, y: gameCanvas.height - 50, width: 10, height: 10, vx: 0, vy: -10 });
                     }
+                } else if (currentLevel === 2 && level2Phase >= 2) {
+                    // Level 2 Phase 2 (WASD) Shooting
+                    // Fire logic is changed in gameLoop to 1.6x interval.
+
+                    let dx = mouseX - playerX;
+                    let dy = mouseY - playerY;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // 90% speed of previous 48 (which was the directed bullet speed from Level 1 side ship)
+                    let speed = 48 * 0.9;
+                    let vx = (dx / dist) * speed;
+                    let vy = (dy / dist) * speed;
+
+                    // Shoot 2 bullets
+                    bullets.push({ x: playerX - 10, y: playerY, width: 10, height: 10, vx: vx, vy: vy });
+                    bullets.push({ x: playerX + 10, y: playerY, width: 10, height: 10, vx: vx, vy: vy });
                 }
 
-                // Second Ship (Side Ship)
-                if (hasMirrorShip && currentLevel === 1) {
+                // Second Ship (Side Ship) - Shoot in Level 1 OR Level 2 before glide
+                if (hasMirrorShip && (currentLevel === 1 || (currentLevel === 2 && !mirrorGlideMode))) {
                     let ratio = playerX / gameCanvas.width;
                     let sideY = (gameCanvas.height - 100) * ratio + 50;
 
@@ -1646,21 +2101,16 @@
                     } else {
                         bullets.push({ x: 40, y: sideY, width: 10, height: 10, vx: 10, vy: 0 });
                     }
-                } else if (currentLevel === 2 && level2Phase >= 2) {
-                    // Shoot towards mouse
-                    let dx = mouseX - playerX;
-                    let dy = mouseY - playerY;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    let vx = (dx / dist) * 48; // 300% faster (12 * (1 + 3))
-                    let vy = (dy / dist) * 48;
-                    bullets.push({ x: playerX, y: playerY, width: 10, height: 10, vx: vx, vy: vy });
                 }
             }
 
             let gameWon = false;
 
             function gameLoop(timestamp) {
-                if (!gameRunning) return;
+                if (!gameRunning) {
+                    isLoopRunning = false;
+                    return;
+                }
 
                 const deltaTime = timestamp - lastTime;
                 lastTime = timestamp;
@@ -1670,24 +2120,57 @@
                     return;
                 }
 
+                // Visual Effects Math
+                let swayTime = timestamp / 1000;
+                cameraSwayX = Math.sin(swayTime * 0.5) * 8;
+                cameraSwayY = Math.cos(swayTime * 0.45) * 8;
+
+                let curShakeX = (Math.random() - 0.5) * screenShake;
+                let curShakeY = (Math.random() - 0.5) * screenShake;
+                if (screenShake > 0) screenShake *= 0.85;
+
+                // Background Movement
+                const bgLayer = document.getElementById('gameBackground');
+                if (bgLayer) {
+                    bgLayer.style.transform = `translate(${cameraSwayX + curShakeX}px, ${cameraSwayY + curShakeY}px) scale(1.1)`;
+                }
+
                 if (gameWon) {
-                    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-                    ctx.fillStyle = "black";
-                    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+                    const winUI = document.getElementById('levelWinMenu');
+                    const statusText = document.getElementById('winStatusText');
+                    const nextBtn = document.getElementById('nextLevelBtn');
+                    const winShopBtn = document.getElementById('winShopBtn');
+                    const winExitBtn = document.getElementById('winExitBtn');
 
-                    ctx.font = "bold 50px 'Outfit', sans-serif";
-                    ctx.fillStyle = "#00ff00"; // Green
-                    ctx.textAlign = "center";
-                    ctx.fillText("NYERTÉL!", gameCanvas.width / 2, gameCanvas.height / 2 - 40);
+                    if (winUI && winUI.style.display !== 'block') {
+                        statusText.textContent = `${currentLevel}. PÁLYA TELJESÍTVE`;
+                        winUI.style.display = 'block';
 
-                    const btn = document.getElementById('level2Btn');
-                    btn.style.display = 'block';
-                    btn.classList.add('centered'); // Show in center on win
+                        // Show NEXT LEVEL button only if level 1
+                        nextBtn.style.display = (currentLevel === 1) ? 'block' : 'none';
 
-                    ctx.fillStyle = "white";
-                    ctx.font = "30px 'Outfit', sans-serif";
-                    ctx.fillText("KAPTÁL 1000 PÉNZT!", gameCanvas.width / 2, gameCanvas.height / 2 + 20);
+                        nextBtn.onclick = () => {
+                            winUI.style.display = 'none';
+                            gameWon = false;
+                            startLevel2();
+                        };
 
+                        winShopBtn.onclick = () => {
+                            winUI.style.display = 'none';
+                            openShopIngame();
+                        };
+
+                        winExitBtn.onclick = () => {
+                            winUI.style.display = 'none';
+                            gameWon = false;
+                            document.getElementById('finishGameBtn').click();
+                        };
+
+                        unlockedLevel2 = true;
+                        saveGameState();
+                        updateLevelButtons();
+                    }
+                    isLoopRunning = false;
                     return;
                 }
 
@@ -1703,6 +2186,10 @@
                         if (ct >= 42 && wasdShowState === 0) {
                             wasdShowState = 1;
                             if (wasdImg) wasdImg.style.display = 'block';
+                            // Clear all enemies strictly when WASD appears
+                            enemies.forEach(e => { if (e.dom) e.dom.remove(); });
+                            enemies = [];
+                            mirrorGlideMode = true; // Start mirror ship glide
                         }
 
                         if (wasdShowState === 1) {
@@ -1776,8 +2263,17 @@
                     }
 
                     // Auto Fire Logic
-                    if (isMouseDown && autoFireLevel > 0) {
-                        const fireInterval = autoFireLevel === 2 ? (1000 / 20) : (1000 / 14);
+                    if (isMouseDown && (autoFireLevel > 0 || (currentLevel === 2 && level2Phase >= 2))) {
+                        // Base interval
+                        let fireInterval = autoFireLevel === 2 ? (1000 / 20) : (1000 / 14);
+
+                        // Level 2 Phase 2 modification: 60% slower -> interval * 1.6
+                        if (currentLevel === 2 && level2Phase >= 2) {
+                            fireInterval = fireInterval * 1.6;
+                            // Also ensure it shoots even if autoFireLevel is 0, if that's desired behavior for L2
+                            // But usually mouse click shoots anyway. 
+                        }
+
                         if (timestamp - lastShotTime > fireInterval) {
                             spawnBullet();
                             lastShotTime = timestamp;
@@ -1786,6 +2282,8 @@
                 }
 
                 ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+                ctx.save();
+                ctx.translate(cameraSwayX + curShakeX, cameraSwayY + curShakeY);
 
                 if (gameOver) {
                     ctx.font = "bold 60px 'Outfit', sans-serif";
@@ -1797,16 +2295,63 @@
                 // Draw Player
                 drawSpaceship(playerX, (currentLevel === 2 && level2Phase >= 2) ? playerY : (gameCanvas.height - 50));
 
-                // Draw Side Ship
+                // Draw Side Ship (Mirror Ship)
                 if (hasMirrorShip) {
-                    let ratio = playerX / gameCanvas.width;
-                    let sideY = (gameCanvas.height - 100) * ratio + 50;
+                    let drawMx, drawMy;
+
+                    if (currentLevel === 1) {
+                        let ratio = playerX / gameCanvas.width;
+                        drawMx = 40;
+                        drawMy = (gameCanvas.height - 100) * ratio + 50;
+                        // Sync internal state for transition
+                        mirrorX = drawMx; mirrorY = drawMy;
+                    } else {
+                        // Level 2 Logic
+                        if (!mirrorGlideMode) {
+                            // Before Glide: Still on side rail (mimic Level 1 behavior relative to center player)
+                            // Player starts at center in Level 2 phase 0/1
+                            let ratio = playerX / gameCanvas.width;
+                            drawMx = 40;
+                            drawMy = (gameCanvas.height - 100) * ratio + 50;
+                            mirrorX = drawMx; mirrorY = drawMy;
+                        } else {
+                            // Glide / Follow Mode
+                            let targetX = playerX - 50;
+                            let targetY = playerY - 40;
+
+                            // Smooth Lerp (approx 2s for full travel, per frame 0.05 factor at 60fps is fastish, use smaller for slow glide)
+                            // 2 seconds... maybe 0.02 per frame?
+                            // Let's use deltaTime for consistency
+                            let lerpFactor = 0.005 * deltaTime; // e.g. 16ms * 0.005 = 0.08
+                            if (lerpFactor > 1) lerpFactor = 1;
+
+                            mirrorX += (targetX - mirrorX) * lerpFactor;
+                            mirrorY += (targetY - mirrorY) * lerpFactor;
+
+                            drawMx = mirrorX;
+                            drawMy = mirrorY;
+
+                            // Calculate rotation only during glide mode
+                            let dx = mouseX - mirrorX;
+                            let dy = mouseY - mirrorY;
+                            mirrorAngle = Math.atan2(dy, dx) + Math.PI / 2;
+                        }
+                    }
+
+                    ctx.save();
+                    if (mirrorGlideMode && currentLevel === 2) {
+                        ctx.translate(drawMx, drawMy);
+                        ctx.rotate(mirrorAngle);
+                        ctx.translate(-drawMx, -drawMy);
+                    }
 
                     // Draw rotated small ship on left (x=20)
                     ctx.fillStyle = "orange"; // Distinct color
-                    ctx.fillRect(10, sideY - 10, 20, 20); // Body
+                    ctx.fillRect(drawMx - 10, drawMy - 10, 20, 20); // Body
                     ctx.fillStyle = "yellow";
-                    ctx.fillRect(30, sideY - 5, 10, 10); // Nose pointing right
+                    ctx.fillRect(drawMx + 10, drawMy - 5, 10, 10); // Nose pointing right (or wherever)
+
+                    ctx.restore();
                 }
 
                 // Draw Loading Bar
@@ -1814,7 +2359,7 @@
                     let barW = 300;
                     let barH = 10;
                     let lx = (gameCanvas.width / 2) - (barW / 2);
-                    let ly = gameCanvas.height - 30; // Bottom center
+                    let ly = 50; // Top center
 
                     ctx.fillStyle = "#555";
                     ctx.fillRect(lx, ly, barW, barH);
@@ -1861,6 +2406,10 @@
                             b.y += b.vy; // Use the fixed vy from spawnBullet
                         }
 
+                        // Drawing Bullets with Shadow
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(b.x - 5 + 4, b.y + 4, b.width, b.height); // Shadow
+                        ctx.fillStyle = (currentLevel === 2 && level2Phase === 3) ? `hsl(${Date.now() % 360}, 100%, 50%)` : "white";
                         ctx.fillRect(b.x - 5, b.y, b.width, b.height);
                         if (b.y < 0 || b.x < 0 || b.x > gameCanvas.width || b.y > gameCanvas.height) bullets.splice(i, 1);
                     }
@@ -1968,6 +2517,9 @@
                                 if (boss.hp <= 0) {
                                     score += 1000;
                                     scoreDisplay.textContent = score;
+                                    score += 1000;
+                                    scoreDisplay.textContent = score;
+                                    updateGlobalMoney(score);
                                     bossActive = false;
                                     gameWon = true; // Trigger Win
                                 }
@@ -2011,6 +2563,9 @@
                             if (m.y + m.h >= gameCanvas.height) m.y = gameCanvas.height - m.h - 1;
                         }
 
+                        // Drawing Boss Missile with Shadow
+                        ctx.fillStyle = "black";
+                        ctx.fillRect(m.x + 4, m.y + 4, m.w, m.h); // Shadow
                         ctx.fillStyle = "purple";
                         ctx.fillRect(m.x, m.y, m.w, m.h);
 
@@ -2065,63 +2620,63 @@
                         });
                     }
 
-                    // Meme Handling
-                    memeTimers.alt23 += deltaTime;
-                    memeTimers.m5 += deltaTime;
-                    memeTimers.m6 += deltaTime;
-                    memeTimers.m1 += deltaTime;
-                    memeTimers.m4 += deltaTime;
-                    memeTimers.m7 += deltaTime;
-
-                    if (memeTimers.alt23 > 20000) {
-                        memeTimers.alt23 = 0;
-                        altMemeToggle = !altMemeToggle;
-                        showMeme(altMemeToggle ? 'meme_2.gif' : 'meme_3.gif', 'memeLayerAbove', 5000, 'meme-full chroma-key-green');
-                    }
-                    if (memeTimers.m5 > 8000) {
-                        memeTimers.m5 = 0;
-                        showMeme('meme_5.gif', 'memeLayerAbove', 3000, 'meme-full chroma-key-green');
-                    }
-                    if (memeTimers.m6 > 10000) {
-                        memeTimers.m6 = 0;
-                        showMeme('meme_6.gif', 'memeLayerBehind', 4000, 'meme-full chroma-key-green');
-                    }
-                    if (memeTimers.m1 > 12000) {
-                        memeTimers.m1 = 0;
-                        showMeme('meme1.gif', 'memeLayerAbove', 3000, 'meme-side meme-left chroma-key-green');
-                        showMeme('meme1.gif', 'memeLayerAbove', 3000, 'meme-side meme-right chroma-key-green');
-                    }
-                    if (memeTimers.m4 > 15000) {
-                        memeTimers.m4 = 0;
-                        showMeme('meme_4.gif', 'memeLayerAbove', 4000, 'meme-full chroma-key-green');
-                    }
-                    if (memeTimers.m7 > 25000) {
-                        memeTimers.m7 = 0;
-                        showMeme('meme_7.gif', 'memeLayerBehind', 5000, 'meme-full chroma-key-green');
-                    }
-
-                    if (bossActive && !bossMemeTriggered) {
-                        showMeme('meme_end.gif', 'memeLayerAbove', 5000, 'meme-full chroma-key-green');
-                        bossMemeTriggered = true;
+                    // Meme Handling (Level 2 Phase 3 ONLY)
+                    if (currentLevel === 2 && level2Phase === 3) {
+                        memeRandomTimer += deltaTime;
+                        // "Random all gif 70%" -> High frequency random spawn
+                        if (memeRandomTimer > 1500) { // Spawn one every 1.5s approx
+                            memeRandomTimer = 0;
+                            if (Math.random() < 0.7) {
+                                const rndMeme = memeFiles[Math.floor(Math.random() * memeFiles.length)];
+                                const rndLayer = Math.random() > 0.5 ? 'memeLayerAbove' : 'memeLayerBehind';
+                                const duration = 3000 + Math.random() * 2000;
+                                let cls = 'meme-full chroma-key-green';
+                                showMeme(rndMeme, rndLayer, duration, cls);
+                            }
+                        }
                     }
 
                     // Update Entities
                     for (let i = enemies.length - 1; i >= 0; i--) {
                         let e = enemies[i];
 
-                        if (e.isHoming) {
-                            let dx = playerX - e.x;
-                            let dy = playerY - e.y;
-                            let dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist > 0) {
-                                e.x += (dx / dist) * 3;
-                                e.y += (dy / dist) * 3;
+                        if (e.dying > 0) {
+                            e.dying -= deltaTime;
+                            if (e.dying <= 0) {
+                                if (e.dom) e.dom.remove();
+                                enemies.splice(i, 1);
+                                continue;
                             }
                         } else {
-                            e.y += (gameCanvas.height / 5000) * deltaTime;
+                            if (e.isHoming) {
+                                let dx = playerX - e.x;
+                                let dy = playerY - e.y;
+                                let dist = Math.sqrt(dx * dx + dy * dy);
+                                if (dist > 0) {
+                                    e.x += (dx / dist) * 3;
+                                    e.y += (dy / dist) * 3;
+                                }
+                            } else {
+                                e.y += (gameCanvas.height / 5000) * deltaTime;
+                            }
                         }
 
-                        if (e.isFekete) {
+                        // Draw Enemy with Shake if dying
+                        ctx.save();
+                        if (e.dying > 0) {
+                            ctx.translate((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
+                            ctx.globalAlpha = e.dying / 150;
+                        }
+
+                        if (!e.isFekete) {
+                            // Shadow
+                            ctx.fillStyle = "black";
+                            ctx.fillRect(e.x - 20 + 7, e.y - 20 + 7, e.width, e.height);
+                            // Entity
+                            ctx.fillStyle = e.isRainbow ? `hsl(${Date.now() % 360}, 100%, 50%)` : e.color;
+                            ctx.fillRect(e.x - 20, e.y - 20, e.width, e.height);
+                        } else {
+                            // "Fekete" Meme Enemy (DOM based)
                             if (!e.dom) {
                                 e.dom = document.createElement('img');
                                 e.dom.src = './meme_fekete.gif';
@@ -2130,24 +2685,64 @@
                                 e.dom.style.width = e.width + 'px';
                                 e.dom.style.height = e.height + 'px';
                                 e.dom.style.display = 'block';
+                                e.dom.style.boxShadow = "7px 7px 0px black";
                                 document.getElementById('memeLayerEnemies').appendChild(e.dom);
+                            }
+                            if (e.dying > 0) {
+                                e.dom.style.opacity = e.dying / 150;
+                                e.dom.style.transform = `translate(${(Math.random() - 0.5) * 10}px, ${(Math.random() - 0.5) * 10}px)`;
+                            } else {
+                                e.dom.style.opacity = 1;
+                                e.dom.style.transform = "none";
                             }
                             e.dom.style.left = (e.x - 20) + 'px';
                             e.dom.style.top = (e.y - 20) + 'px';
-                        } else {
-                            ctx.fillStyle = e.isRainbow ? `hsl(${Date.now() % 360}, 100%, 50%)` : e.color;
-                            ctx.fillRect(e.x - 20, e.y - 20, e.width, e.height);
                         }
+                        ctx.restore();
 
-                        if (e.y > gameCanvas.height + 100 || e.y < -100 || e.x > gameCanvas.width + 100 || e.x < -100) {
-                            // Only take damage if it falls off bottom in Level 1. Level 2 specified only on contact.
-                            if (currentLevel === 1 && !e.isHoming && e.y > gameCanvas.height) takeDamage(1);
-                            if (e.dom) e.dom.remove();
-                            enemies.splice(i, 1);
-                        } else if (rectIntersect(e.x - 20, e.y - 20, e.width, e.height, playerX - 20, playerY - 20, 40, 40)) {
-                            takeDamage(1);
-                            if (e.dom) e.dom.remove();
-                            enemies.splice(i, 1);
+                        if (!e.dying) {
+                            if (e.y > gameCanvas.height + 100 || e.y < -100 || e.x > gameCanvas.width + 100 || e.x < -100) {
+                                if (currentLevel === 1 && !e.isHoming && e.y > gameCanvas.height) takeDamage(1);
+                                if (e.dom) e.dom.remove();
+                                enemies.splice(i, 1);
+                            } else if (rectIntersect(e.x - 20, e.y - 20, e.width, e.height, playerX - 20, playerY - 20, 40, 40)) {
+                                takeDamage(1);
+                                if (e.dom) e.dom.remove();
+                                enemies.splice(i, 1);
+                            }
+                        }
+                    }
+
+                    // Move Mirror Ship Shooting Logic here (inside gameLoop)
+                    if (hasMirrorShip && currentLevel === 2 && level2Phase >= 2 && !gameOver) {
+                        mirrorShotTimer += deltaTime;
+                        if (mirrorShotTimer > 333) { // 3 shots per second
+                            mirrorShotTimer = 0;
+                            // Find nearest enemy
+                            let nearest = null;
+                            let minDist = Infinity;
+                            enemies.forEach(e => {
+                                let dist = Math.sqrt(Math.pow(e.x - mirrorX, 2) + Math.pow(e.y - mirrorY, 2));
+                                if (dist < minDist) {
+                                    minDist = dist;
+                                    nearest = e;
+                                }
+                            });
+
+                            if (nearest) {
+                                let dx = nearest.x - mirrorX;
+                                let dy = nearest.y - mirrorY;
+                                let dist = Math.sqrt(dx * dx + dy * dy);
+                                if (dist > 0) {
+                                    let speed = 15;
+                                    bullets.push({
+                                        x: mirrorX, y: mirrorY,
+                                        width: 8, height: 8,
+                                        vx: (dx / dist) * speed,
+                                        vy: (dy / dist) * speed
+                                    });
+                                }
+                            }
                         }
                     }
                 }
@@ -2156,12 +2751,13 @@
                 for (let i = bullets.length - 1; i >= 0; i--) {
                     for (let j = enemies.length - 1; j >= 0; j--) {
                         let b = bullets[i]; let e = enemies[j];
-                        if (rectIntersect(b.x - 5, b.y, 10, 10, e.x - 20, e.y - 20, 40, 40)) {
+                        if (!e.dying && rectIntersect(b.x - 5, b.y, 10, 10, e.x - 20, e.y - 20, 40, 40)) {
+                            e.dying = 150; // 150ms shake
                             createExplosion(e.x, e.y, e.isFekete ? "white" : e.color);
-                            if (e.dom) e.dom.remove();
-                            bullets.splice(i, 1); enemies.splice(j, 1);
+                            bullets.splice(i, 1);
                             score++;
                             scoreDisplay.textContent = score;
+                            updateGlobalMoney(score);
                             break;
                         }
                     }
@@ -2170,9 +2766,15 @@
                 // Particles
                 for (let i = particles.length - 1; i >= 0; i--) {
                     let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= deltaTime;
-                    ctx.fillStyle = p.color; ctx.globalAlpha = p.life / 500; ctx.fillRect(p.x, p.y, 4, 4); ctx.globalAlpha = 1;
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.life / 1000;
+                    let s = p.size || 4;
+                    ctx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
+                    ctx.globalAlpha = 1;
                     if (p.life <= 0) particles.splice(i, 1);
                 }
+
+                ctx.restore();
 
                 requestAnimationFrame(gameLoop);
             }
@@ -2206,13 +2808,17 @@
             }
 
             function createExplosion(x, y, color) {
-                for (let i = 0; i < 10; i++) {
+                // Flash / Shake
+                screenShake = Math.max(screenShake, 10);
+
+                for (let i = 0; i < 18; i++) {
                     particles.push({
                         x: x,
                         y: y,
-                        vx: (Math.random() - 0.5) * 5,
-                        vy: (Math.random() - 0.5) * 5,
-                        life: 500,
+                        vx: (Math.random() - 0.5) * 12,
+                        vy: (Math.random() - 0.5) * 12,
+                        size: 2 + Math.random() * 6,
+                        life: 600 + Math.random() * 400,
                         color: color
                     });
                 }
@@ -2226,6 +2832,7 @@
                 if (gameOver) return;
                 playerHP -= amount;
                 updateHealthUI();
+                screenShake = 25; // Big shake
                 createExplosion(playerX, (currentLevel === 2 && level2Phase >= 2) ? playerY : (gameCanvas.height - 50), "red");
                 if (playerHP <= 0) {
                     triggerGameOver();
@@ -2410,6 +3017,631 @@
             }
         });
     </script>
+
+    <!-- Pac-Man Game Overlay -->
+    <div id="pacmanOverlay" class="pacman-overlay">
+        <div class="pacman-game-container">
+            <canvas id="pacmanCanvas"></canvas>
+            <div class="pacman-right-panel">
+                <h2 style="margin-top: 0; color: #FFD700;">DABO-MAN</h2>
+                <div class="pacman-stat">
+                    <div class="pacman-label">DABONIUM</div>
+                    <div class="pacman-value" id="pacmanScore">0</div>
+                </div>
+                <div class="pacman-stat">
+                    <div class="pacman-label">LEVEL</div>
+                    <div class="pacman-value" id="pacmanLevel">1</div>
+                </div>
+                <div class="pacman-stat">
+                    <div class="pacman-label">LIVES</div>
+                    <div class="pacman-lives" id="pacmanLives"></div>
+                </div>
+                <div id="pacmanGameOver" class="pacman-gameover">
+                    GAME OVER
+                </div>
+            </div>
+        </div>
+        <button class="pacman-exit-btn" onclick="exitPacmanGame()">KILÉPÉS</button>
+    </div>
+
+    <style>
+        /* Pac-Man Game Overlay Styles */
+        .pacman-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pacman-game-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        #pacmanCanvas {
+            border: 4px solid #2196F3;
+            background: #000;
+            box-shadow: 0 0 30px rgba(33, 150, 243, 0.5);
+        }
+
+        .pacman-right-panel {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #FFD700;
+            border-radius: 10px;
+            padding: 30px 20px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            font-family: 'Outfit', sans-serif;
+            color: white;
+        }
+
+        .pacman-stat {
+            margin: 30px 0;
+        }
+
+        .pacman-label {
+            font-size: 1.2rem;
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .pacman-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
+
+        .pacman-lives {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pacman-life-icon {
+            width: 30px;
+            height: 30px;
+            background: #FFFF00;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .pacman-life-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-left: 15px solid #000;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            transform: translate(-30%, -50%);
+        }
+
+        .pacman-exit-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 35px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            font-family: 'Outfit', sans-serif;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #c62828;
+            transition: all 0.1s;
+        }
+
+        .pacman-exit-btn:hover {
+            background: #e53935;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #c62828;
+        }
+
+        .pacman-exit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #c62828;
+        }
+
+        .pacman-gameover {
+            display: none;
+            font-size: 2rem;
+            color: #FF0000;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 40px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+
+    <script>
+        // Pac-Man Game Implementation
+        function initPacmanGame() {
+            const canvas = document.getElementById('pacmanCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Constants
+            const TILE_SIZE = 20;
+            const MAZE_WIDTH = 28;
+            const MAZE_HEIGHT = 31;
+            canvas.width = MAZE_WIDTH * TILE_SIZE;
+            canvas.height = MAZE_HEIGHT * TILE_SIZE;
+
+            // Game state
+            let gameRunning = false;
+            let score = 0;
+            let lives = 3;
+            let level = 1;
+            let powerMode = false;
+            let powerModeTimer = 0;
+            const POWER_MODE_DURATION = 8000;
+            let ghostsEatenThisPower = 0;
+
+            // Maze layout (1=wall, 0=path, 2=pellet, 3=power pellet)
+            const baseMaze = [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+                [1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
+                [1, 3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1],
+                [1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
+                [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+                [1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1],
+                [1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1],
+                [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+                [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+                [1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
+                [1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
+                [1, 3, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 3, 1],
+                [1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1],
+                [1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1],
+                [1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1],
+                [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1],
+                [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1],
+                [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            ];
+
+            let maze = JSON.parse(JSON.stringify(baseMaze));
+
+            // Player (Pac-Man)
+            class Player {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = 14;
+                    this.y = 23;
+                    this.dir = { x: 0, y: 0 };
+                    this.nextDir = { x: 0, y: 0 };
+                    // Visual offset to center the sprite on the tile path
+                    // Coordinates are top-left of the tile, so add 0.5 to center
+                    this.speed = 0.12;
+                    this.mouthOpen = 0;
+                    this.mouthSpeed = 0.2;
+                }
+
+                update() {
+                    // Try to turn
+                    if (this.nextDir.x !== 0 || this.nextDir.y !== 0) {
+                        const nx = this.x + this.nextDir.x * 0.5;
+                        const ny = this.y + this.nextDir.y * 0.5;
+                        if (!isWall(Math.floor(nx + 0.5), Math.floor(ny + 0.5))) {
+                            this.dir = { ...this.nextDir };
+                        }
+                    }
+
+                    // Move
+                    if (this.dir.x !== 0 || this.dir.y !== 0) {
+                        const nx = this.x + this.dir.x * this.speed;
+                        const ny = this.y + this.dir.y * this.speed;
+
+                        if (!isWall(Math.floor(nx + 0.5), Math.floor(ny + 0.5))) {
+                            this.x = nx;
+                            this.y = ny;
+                        }
+                    }
+
+                    // Wrap
+                    if (this.x < 0) this.x = MAZE_WIDTH - 1;
+                    if (this.x >= MAZE_WIDTH) this.x = 0;
+
+                    // Mouth animation
+                    this.mouthOpen += this.mouthSpeed;
+                    if (this.mouthOpen > 0.6 || this.mouthOpen < 0) this.mouthSpeed *= -1;
+
+                    // Eat pellets
+                    this.checkPellets();
+                }
+
+                checkPellets() {
+                    const tx = Math.floor(this.x + 0.5);
+                    const ty = Math.floor(this.y + 0.5);
+                    if (maze[ty] && maze[ty][tx] === 2) {
+                        maze[ty][tx] = 0;
+                        addScore(3);
+                        checkLevelComplete();
+                    } else if (maze[ty] && maze[ty][tx] === 3) {
+                        maze[ty][tx] = 0;
+                        addScore(13);
+                        activatePowerMode();
+                        checkLevelComplete();
+                    }
+                }
+
+                draw() {
+                    const cx = (this.x + 0.5) * TILE_SIZE;
+                    const cy = (this.y + 0.5) * TILE_SIZE;
+                    const r = TILE_SIZE / 2 - 2;
+
+                    let angle = 0;
+                    if (this.dir.x > 0) angle = 0;
+                    else if (this.dir.x < 0) angle = Math.PI;
+                    else if (this.dir.y > 0) angle = Math.PI / 2;
+                    else if (this.dir.y < 0) angle = -Math.PI / 2;
+
+                    const mouth = this.mouthOpen * Math.PI / 4;
+
+                    ctx.fillStyle = '#FFFF00';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, angle + mouth, angle + 2 * Math.PI - mouth);
+                    ctx.lineTo(cx, cy);
+                    ctx.fill();
+                }
+            }
+
+            // Ghost class
+            class Ghost {
+                constructor(x, y, color, targetMode) {
+                    this.startX = x;
+                    this.startY = y;
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.targetMode = targetMode;
+                    this.dir = { x: 0, y: -1 };
+                    this.speed = 0.08 * (1 + level * 0.05);
+                    this.frightened = false;
+                    this.respawnTimer = 0;
+                    this.scatterTimer = 300;
+                    this.runOut = true; // Force exit from ghost house
+                }
+
+                reset() {
+                    this.x = this.startX;
+                    this.y = this.startY;
+                    this.dir = { x: 0, y: -1 };
+                    this.frightened = false;
+                    this.respawnTimer = 0;
+                    this.scatterTimer = 300;
+                    this.runOut = true;
+                }
+
+                update() {
+                    if (this.respawnTimer > 0) {
+                        this.respawnTimer--;
+                        if (this.respawnTimer === 0) this.reset();
+                        return;
+                    }
+
+                    const tx = Math.floor(this.x + 0.5);
+                    const ty = Math.floor(this.y + 0.5);
+
+                    // At tile center, pick direction
+                    if (Math.abs(this.x - tx) < 0.05 && Math.abs(this.y - ty) < 0.05) {
+
+                        if (this.runOut) {
+                            if (ty <= 11) this.runOut = false;
+                            else {
+                                this.dir = { x: 0, y: -1 };
+                                if (this.x < 13.4) this.x += 0.05;
+                                if (this.x > 13.6) this.x -= 0.05;
+                            }
+                        }
+
+                        if (!this.runOut) {
+                            const dirs = [];
+                            if (!isWall(tx + 1, ty) && this.dir.x !== -1) dirs.push({ x: 1, y: 0 });
+                            if (!isWall(tx - 1, ty) && this.dir.x !== 1) dirs.push({ x: -1, y: 0 });
+                            if (!isWall(tx, ty + 1) && this.dir.y !== -1) dirs.push({ x: 0, y: 1 });
+                            if (!isWall(tx, ty - 1) && this.dir.y !== 1) dirs.push({ x: 0, y: -1 });
+
+                            if (dirs.length > 0) {
+                                if (this.frightened) {
+                                    this.dir = dirs[Math.floor(Math.random() * dirs.length)];
+                                } else {
+                                    const px = Math.floor(player.x + 0.5);
+                                    const py = Math.floor(player.y + 0.5);
+
+                                    let best = dirs[0];
+                                    let bestD = 9999;
+                                    for (const d of dirs) {
+                                        const dist = Math.abs(px - (tx + d.x)) + Math.abs(py - (ty + d.y));
+                                        if (dist < bestD) {
+                                            bestD = dist;
+                                            best = d;
+                                        }
+                                    }
+                                    this.dir = best;
+                                }
+                            }
+                        }
+                    }
+
+                    // Move
+                    this.x += this.dir.x * this.speed;
+                    this.y += this.dir.y * this.speed;
+
+                    // Wrap
+                    if (this.x < 0) this.x = MAZE_WIDTH - 1;
+                    if (this.x >= MAZE_WIDTH) this.x = 0;
+                }
+
+                getTarget() {
+                    return { x: Math.floor(player.x + 0.5), y: Math.floor(player.y + 0.5) };
+                }
+
+                draw() {
+                    if (this.respawnTimer > 0) return;
+
+                    const centerX = this.x * TILE_SIZE + TILE_SIZE / 2;
+                    const centerY = this.y * TILE_SIZE + TILE_SIZE / 2;
+                    const radius = TILE_SIZE / 2 - 2;
+
+                    ctx.fillStyle = this.frightened ? '#2196F3' : this.color;
+
+                    // Body
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY - radius / 4, radius, Math.PI, 0, false);
+                    ctx.lineTo(centerX + radius, centerY + radius);
+                    ctx.lineTo(centerX + radius / 2, centerY + radius / 2);
+                    ctx.lineTo(centerX, centerY + radius);
+                    ctx.lineTo(centerX - radius / 2, centerY + radius / 2);
+                    ctx.lineTo(centerX - radius, centerY + radius);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Eyes
+                    if (!this.frightened) {
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(centerX - radius / 2, centerY - radius / 3, radius / 3, radius / 3);
+                        ctx.fillRect(centerX + radius / 6, centerY - radius / 3, radius / 3, radius / 3);
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(centerX - radius / 3, centerY - radius / 4, radius / 6, radius / 6);
+                        ctx.fillRect(centerX + radius / 4, centerY - radius / 4, radius / 6, radius / 6);
+                    }
+                }
+            }
+
+            // Initialize game objects
+            const player = new Player();
+            const ghosts = [
+                new Ghost(13, 11, '#FF0000', 'chase'),
+                new Ghost(14, 11, '#FFB8FF', 'ambush'),
+                new Ghost(13, 13, '#00FFFF', 'patrol'),
+                new Ghost(14, 13, '#FFB851', 'flank')
+            ];
+
+            // Helper functions
+            function isWall(x, y) {
+                if (y < 0 || y >= maze.length || x < 0 || x >= maze[0].length) return true;
+                return maze[y][x] === 1;
+            }
+
+            function addScore(points) {
+                score += points;
+                updateGlobalDabonium(score);
+                updateUI();
+            }
+
+            function activatePowerMode() {
+                powerMode = true;
+                powerModeTimer = POWER_MODE_DURATION;
+                ghostsEatenThisPower = 0;
+                ghosts.forEach(g => g.frightened = true);
+            }
+
+            function checkLevelComplete() {
+                let pelletsLeft = 0;
+                for (let y = 0; y < maze.length; y++) {
+                    for (let x = 0; x < maze[y].length; x++) {
+                        if (maze[y][x] === 2 || maze[y][x] === 3) pelletsLeft++;
+                    }
+                }
+                if (pelletsLeft === 0) {
+                    level++;
+                    resetLevel();
+                }
+            }
+
+            function resetLevel() {
+                maze = JSON.parse(JSON.stringify(baseMaze));
+                player.reset();
+                ghosts.forEach(g => g.reset());
+                updateUI();
+            }
+
+            function loseLife() {
+                lives--;
+                updateUI();
+                if (lives <= 0) {
+                    gameRunning = false;
+                    document.getElementById('pacmanGameOver').style.display = 'block';
+                } else {
+                    player.reset();
+                    ghosts.forEach(g => g.reset());
+                }
+            }
+
+            function checkCollisions() {
+                for (const ghost of ghosts) {
+                    if (ghost.respawnTimer > 0) continue;
+                    // Use center-to-center distance with a generous radius
+                    const dist = Math.sqrt(Math.pow((player.x + 0.5) - (ghost.x + 0.5), 2) + Math.pow((player.y + 0.5) - (ghost.y + 0.5), 2));
+
+                    if (dist < 0.8) { // Increased from 0.7 to 0.8 for reliable hit
+                        if (powerMode && ghost.frightened) {
+                            const points = [50, 100, 200, 400][ghostsEatenThisPower] || 400;
+                            addScore(points);
+                            ghostsEatenThisPower++;
+                            ghost.respawnTimer = 120;
+                        } else if (!powerMode) {
+                            loseLife();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function updateUI() {
+                document.getElementById('pacmanScore').textContent = score;
+                document.getElementById('pacmanLevel').textContent = level;
+                const livesContainer = document.getElementById('pacmanLives');
+                livesContainer.innerHTML = '';
+                for (let i = 0; i < lives; i++) {
+                    const lifeIcon = document.createElement('div');
+                    lifeIcon.className = 'pacman-life-icon';
+                    livesContainer.appendChild(lifeIcon);
+                }
+            }
+
+            function updateGlobalDabonium(newScore) {
+                const currentGlobalScore = parseInt(localStorage.getItem('daboMoney') || '0');
+                const diff = newScore - score;
+                if (diff > 0) {
+                    const newGlobal = currentGlobalScore + diff;
+                    localStorage.setItem('daboMoney', newGlobal.toString());
+                    const globalDisplays = [
+                        document.getElementById('globalMoneyValue'),
+                        document.getElementById('globalMoneyValueMobile'),
+                        document.getElementById('scoreDisplay')
+                    ];
+                    globalDisplays.forEach(el => {
+                        if (el) el.textContent = newGlobal;
+                    });
+                }
+            }
+
+            // Rendering
+            function drawMaze() {
+                for (let y = 0; y < maze.length; y++) {
+                    for (let x = 0; x < maze[y].length; x++) {
+                        const tile = maze[y][x];
+                        if (tile === 1) {
+                            ctx.fillStyle = '#2196F3';
+                            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                            ctx.strokeStyle = '#1565C0';
+                            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        } else if (tile === 2) {
+                            ctx.fillStyle = '#FFD700';
+                            ctx.beginPath();
+                            ctx.arc(x * TILE_SIZE + TILE_SIZE / 2, y * TILE_SIZE + TILE_SIZE / 2, 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        } else if (tile === 3) {
+                            ctx.fillStyle = '#FFD700';
+                            ctx.beginPath();
+                            ctx.arc(x * TILE_SIZE + TILE_SIZE / 2, y * TILE_SIZE + TILE_SIZE / 2, 6, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                }
+            }
+
+            // Game loop
+            function gameLoop() {
+                if (!gameRunning) return;
+
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                drawMaze();
+
+                player.update();
+                ghosts.forEach(g => g.update());
+                checkCollisions();
+
+                ghosts.forEach(g => g.draw());
+                player.draw();
+
+                // Update power mode
+                if (powerMode) {
+                    powerModeTimer -= 16.66;
+                    if (powerModeTimer <= 0) {
+                        powerMode = false;
+                        ghosts.forEach(g => g.frightened = false);
+                    }
+                }
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            // Keyboard controls (Arrow keys + WASD)
+            document.addEventListener('keydown', (e) => {
+                if (!gameRunning) return;
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') player.nextDir = { x: -1, y: 0 };
+                else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') player.nextDir = { x: 1, y: 0 };
+                else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') player.nextDir = { x: 0, y: -1 };
+                else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') player.nextDir = { x: 0, y: 1 };
+            });
+
+            // Start game
+            gameRunning = true;
+            updateUI();
+            gameLoop();
+        }
+
+        // Game control functions
+        function startPacmanGame() {
+            const overlay = document.getElementById('pacmanOverlay');
+            overlay.style.display = 'flex';
+            document.getElementById('pacmanGameOver').style.display = 'none';
+            initPacmanGame();
+        }
+
+        function exitPacmanGame() {
+            const overlay = document.getElementById('pacmanOverlay');
+            overlay.style.display = 'none';
+        }
+    </script>
+
+    <!-- Secondary styles removed to fix layout conflicts -->
+    <button class="reset-btn" onclick="resetData()">RESET</button>
 </body>
 
 </html>

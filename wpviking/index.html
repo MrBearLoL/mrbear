@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Az én weboldalam</title>
+    <style>
+        body {
+            background-color: white;
+            font-family: "Times New Roman", serif;
+            color: blue;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 8vw;
+            /* Responsive font size */
+            text-decoration: underline;
+            color: red;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 10px 0;
+        }
+
+        @media (min-width: 600px) {
+            h1 {
+                font-size: 50px;
+            }
+        }
+
+        .header-section {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .lista {
+            font-size: 18px;
+            /* Slightly smaller for mobile base */
+            color: darkblue;
+            border: 2px solid red;
+            background-color: #eeeeee;
+            padding: 15px;
+            width: 90%;
+            /* Wider on mobile */
+            margin: 0 auto;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 600px) {
+            .lista {
+                width: 60%;
+                font-size: 24px;
+            }
+        }
+
+        .lorem-szoveg {
+            font-size: 16px;
+            color: black;
+            text-align: justify;
+            margin-top: 30px;
+            padding: 10px;
+            border: 1px dotted black;
+        }
+
+        .gif-side {
+            vertical-align: middle;
+            margin: 0 10px;
+            width: 80px;
+            /* Much larger icon size */
+            height: auto;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Keep the side gifs but safeguard them */
+        .side-gif-left {
+            float: left;
+            margin-right: 15px;
+            max-width: 120px;
+            width: 30%;
+        }
+
+        .side-gif-right {
+            float: right;
+            margin-left: 15px;
+            max-width: 120px;
+            width: 30%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header-section">
+        <img src="201.gif" class="gif-side" alt="gif">
+        <h1>Az én weboldalam</h1>
+        <img src="201.gif" class="gif-side" alt="gif">
+    </div>
+
+    <marquee style="font-size: 20px; color: purple; border-top: 3px double blue; border-bottom: 3px double blue;">
+        !!! <img src="201.gif" style="width: 40px; vertical-align: middle;"> ÜDVÖZÖLLEK A LEGJOBB OLDALON !!! *** FRISS
+        HÍREK: ÚJ DESIGN *** !!! KATTINTS IDE !!! <img src="201.gif" style="width: 40px; vertical-align: middle;">
+    </marquee>
+
+    <div class="container">
+
+        <br><br>
+        <!-- Logo és elválasztó egymás mellett -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <img src="logo.png" style="border: 5px ridge gray; width: 45%; max-width: 300px; height: auto;" alt="Logo">
+            <img src="200.gif" alt="elvalaszto" style="width: 45%; max-width: 300px; height: auto;">
+        </div>
+        <br><br>
+
+        <div class="lista" style="position: relative;">
+            <!-- Ikonok a cím mellett -->
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <img src="202.gif" style="width: 50px; height: auto;" alt="animacio">
+                <h3 style="margin: 0; text-align: center; flex-grow: 1;">Szolgáltatásaim:</h3>
+                <img src="203.gif" style="width: 50px; height: auto;" alt="animacio">
+            </div>
+
+            <ul>
+                <li>Profi weboldalak készítése <img src="201.gif" style="width: 30px; vertical-align: middle;"></li>
+                <li>HTML Programozás mesterfokon</li>
+                <li>Szuper Design és Grafika</li>
+                <li>IT Szaktanácsadás</li>
+                <li>Ingyen SMS küldés</li>
+                <li>MSN Programok <img src="201.gif" style="width: 30px; vertical-align: middle;"></li>
+                <li>Háttérképek letöltése</li>
+                <li>Csengőhangok (midi, mp3)</li>
+                <li>Vírusirtás</li>
+                <li>Játék kódok <img src="201.gif" style="width: 30px; vertical-align: middle;"></li>
+            </ul>
+        </div>
+
+        <br>
+
+        <div class="lorem-szoveg">
+            <h2>Üdvözlet a látogatónak! <img src="201.gif" style="width: 50px; vertical-align: middle; float: right;">
+            </h2>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat.
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+                laborum.
+            </p>
+            <p>
+                <img src="201.gif" style="width: 45px; float: left; margin-right: 10px;">
+                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam
+                rem aperiam,
+                eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
+            </p>
+        </div>
+
+        <br><br>
+        <p><i>Készítette: WPViking "The Master"</i></p>
+        <p>Optimalizálva: Nokia 3310 & Internet Explorer 6.0 <img src="201.gif"
+                style="width: 20px; vertical-align: middle;"></p>
+    </div>
+
+</body>
+
+</html>

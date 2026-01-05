@@ -33,6 +33,19 @@ body {
     position: relative;
 }
 
+/* Dabo page specific overrides */
+.dabo-page {
+    display: block !important;
+    justify-content: normal !important;
+    align-items: normal !important;
+    background: var(--bg-color) !important;
+    overflow: hidden;
+}
+
+.dabo-page::before {
+    display: none !important;
+}
+
 body::before {
     content: '';
     position: fixed;
@@ -103,6 +116,35 @@ header p {
 
 .spacer {
     height: 1rem;
+}
+
+.money-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.money-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.money-amount {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .social-buttons {
