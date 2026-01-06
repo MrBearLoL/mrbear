@@ -228,6 +228,26 @@ header p {
     border-radius: 12px;
 }
 
+.playlist-section {
+    width: 100%;
+    margin-top: 1rem;
+    animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.playlist-card {
+    width: 100%;
+}
+
+.playlist-card .video-container {
+    padding-bottom: 45%;
+}
+
+@media (max-width: 1024px) {
+    .playlist-card .video-container {
+        padding-bottom: 56.25%;
+    }
+}
+
 .right-panel {
     display: flex;
     flex-direction: column;
