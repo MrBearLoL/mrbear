@@ -231,13 +231,19 @@ header p {
 .editor-works-section {
     width: 100%;
     margin-top: 3rem;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
     animation: fadeInUp 0.8s ease-out 0.4s backwards;
+    overflow: visible;
+    /* Fontos, hogy ne vágja le az animációt */
 }
 
 .section-title {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     color: var(--text-color);
     text-align: left;
 }
@@ -245,10 +251,14 @@ header p {
 .scroll-container {
     width: 100%;
     overflow-x: auto;
+    padding-top: 10px;
+    /* Hely az animációnak */
     padding-bottom: 1rem;
     scrollbar-width: thin;
     scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.05);
     cursor: grab;
+    overflow-y: visible;
+    /* Ne vágja le függőlegesen */
 }
 
 .scroll-container::-webkit-scrollbar {
@@ -269,21 +279,27 @@ header p {
     display: flex;
     gap: 1.5rem;
     width: max-content;
+    padding: 5px;
+    /* Extra hely a kereteknek */
 }
 
 .scroll-item {
     width: 350px;
     flex-shrink: 0;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius);
-    padding: 0.75rem;
     transition: var(--transition);
 }
 
 .scroll-item:hover {
-    transform: translateY(-5px);
-    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-8px);
+}
+
+.scroll-item .video-container {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: var(--transition);
+}
+
+.scroll-item:hover .video-container {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
     border-color: var(--primary-color);
 }
 
@@ -291,16 +307,21 @@ header p {
     font-size: 0.9rem;
     color: var(--text-muted);
     text-align: center;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
 }
 
 @media (max-width: 768px) {
+    .editor-works-section {
+        padding: 1.5rem 1rem;
+    }
+
     .scroll-item {
         width: 280px;
     }
 
     .section-title {
         text-align: center;
+        margin-bottom: 1.5rem;
     }
 }
 
