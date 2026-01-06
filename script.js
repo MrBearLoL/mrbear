@@ -183,4 +183,30 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSkinIndex = 4; // medveskinSUMMER.png index
         skinViewer.loadSkin(originalSkin);
     });
+
+    // Video betöltő animáció kezelése
+    const videoContainers = document.querySelectorAll('.video-container');
+    videoContainers.forEach(container => {
+        const iframe = container.querySelector('iframe');
+        if (!iframe) return;
+
+        // Betöltő div létrehozása
+        const loader = document.createElement('div');
+        loader.className = 'video-loader';
+        container.prepend(loader);
+
+        // Amikor a videó betöltődött, elhalványítjuk a betöltőt
+        iframe.addEventListener('load', () => {
+            setTimeout(() => {
+                loader.classList.add('loaded');
+            }, 300);
+        });
+
+        // Biztonsági elhalványítás ha mégse futna le az onload
+        setTimeout(() => {
+            if (!loader.classList.contains('loaded')) {
+                loader.classList.add('loaded');
+            }
+        }, 5000);
+    });
 });
