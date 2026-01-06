@@ -347,6 +347,7 @@ canvas:active {
 
     .viewer-container {
         min-height: 300px;
+        flex-direction: column;
     }
 
     .controls {
